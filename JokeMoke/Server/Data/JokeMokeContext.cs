@@ -2,7 +2,6 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using JokeMoke.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -19,15 +18,14 @@ namespace JokeMoke.Server.Data
         {
         }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
-
         public virtual DbSet<Comments> Comments { get; set; }
         public virtual DbSet<Joke> Joke { get; set; }
         public virtual DbSet<JokeStatistics> JokeStatistics { get; set; }
         public virtual DbSet<JokeType> JokeType { get; set; }
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -120,8 +118,6 @@ namespace JokeMoke.Server.Data
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Email)
                     .IsRequired()
                     .HasMaxLength(320)
