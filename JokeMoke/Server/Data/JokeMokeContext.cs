@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using JokeMoke.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -17,6 +18,9 @@ namespace JokeMoke.Server.Data
             : base(options)
         {
         }
+
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         public virtual DbSet<Comments> Comments { get; set; }
         public virtual DbSet<Joke> Joke { get; set; }

@@ -1,4 +1,7 @@
-using JokeMoke.Server.Data;
+global using JokeMoke.Server.Data;
+global using JokeMoke.Shared;
+global using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.AddSqlServer<JokeMokeContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddDbContext<JokeMokeContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+}
+).AddCookie();
 
 var app = builder.Build();
 
@@ -31,6 +41,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();
