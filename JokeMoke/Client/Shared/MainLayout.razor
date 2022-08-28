@@ -1,15 +1,13 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
+@inject IUserService userService
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <RadzenButton Click=@(args => LoginUser()) Text="وارد شوید" ButtonStyle="ButtonStyle.Primary" />
         </div>
 
         <article class="content px-4">
@@ -17,6 +15,16 @@
         </article>
     </main>
 </div>
+
+@code {
+
+    public async Task LoginUser()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+
+}
+
 
 <RadzenDialog/>
 <RadzenNotification/>
