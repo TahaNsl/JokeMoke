@@ -1,0 +1,101 @@
+﻿@page "/users"
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles ="Admin")]
+
+<style>
+    body {
+        background-color: #8EC5FC;
+        background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    }
+</style>
+
+<PageTitle>Users</PageTitle>
+
+<h3>Users</h3>
+<br />
+
+@if (@UserService.Users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <RadzenDataGrid Data="@UserService.Users" TItem="User" PageSize="5" AllowPaging="true"
+        AllowFiltering="true" AllowColumnResize="true" AllowSorting="true">
+        <Columns>
+            <RadzenDataGridColumn Width="50px" TItem="User" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                <Template Context="User">
+                    @(UserService.Users.IndexOf(User) + 1)
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Width="160px" TItem="User" Property="User.ProfilePicUrl" Title="User Picture">
+                <Template Context="User">
+                    @if (@User.ProfilePicUrl == null)
+                    {
+                    <RadzenImage Path="/Images/user-profile.png" style="width: 50px; height: 50px; border-radius: 8px; margin-right: 8px; float: left;" />  
+                    }
+                    else
+                    {
+                    <RadzenImage Path="@User.ProfilePicUrl" style="width: 50px; height: 50px; border-radius: 8px; margin-right: 8px; float: left;" />
+                        
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="User" Property="UserName" Title="User Name" />
+            <RadzenDataGridColumn TItem="User" Property="Email" Title="Email"/>
+            <RadzenDataGridColumn TItem="User" Property="Password" Title="Password"/>
+            <RadzenDataGridColumn Width="170px" TItem="User" Property="Id" Title="Delete Button">
+            <Template Context="User">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Class="m-1" Click=@(() => DeleteUser(User.Id)) Text="Delete" />
+            </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+<br />
+
+<button class="btn btn-success" @onclick="CreateUser">Create New User</button>
+
+@*<table class="table">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Emil</th>
+            <th>Password</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in UserService.Users)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@user.Password</td>
+
+            </tr>
+        }
+    </tbody>
+</table>*@
+
+@code {
+
+    User user = new User { Role = new Role() };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UserService.GetUsers();
+    }
+
+    async Task DeleteUser(int id)
+    {
+        await UserService.DeleteUser(id);
+        NavigationManager.NavigateTo("/users", true);
+    }
+
+    void CreateUser()
+    {
+       NavigationManager.NavigateTo("/createuser");
+    }
+}

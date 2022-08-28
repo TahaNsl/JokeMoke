@@ -1,0 +1,73 @@
+﻿@page "/createuser"
+@page "/createuser/{id:int}"
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<style>
+    body {
+        background-color: #8EC5FC;
+        background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    }
+</style>
+
+<PageTitle>Create a new User</PageTitle>
+    <h3>Create a new User</h3>
+
+<EditForm Model="user" OnSubmit="HandleSubmit">
+    <div>
+        <lable for="Username">Username</lable>
+        <InputText id="username" @bind-Value="user.UserName" class="form-control"></InputText>
+    </div>
+    <div>
+        <lable for="Email">Email Address</lable>
+        <InputText id="email" @bind-Value="user.Email" class="form-control"></InputText>
+    </div>
+    <div>
+        <lable for="heroname">Password</lable>
+        <InputText id="password" @bind-Value="user.Password" class="form-control"></InputText>
+    </div>
+    <div>
+        <label>Role</label><br />
+        <InputSelect @bind-Value="user.RoleId" class="form-select">
+            @foreach (var role in UserService.Roles)
+           {
+               <option value="@role.Id">@role.Name</option>
+           }
+        </InputSelect>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-success">@btnText</button>
+    @*<button type="button" class="btn btn-danger" @onclick="DeleteUser">Delete User</button>*@
+</EditForm>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    string btnText = string.Empty;
+
+    User user = new User { Role = new Role() };
+
+    protected override async  Task OnInitializedAsync()
+    {
+        btnText = "Create User";
+        await UserService.GetRoles();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+            user.Role = UserService.Roles[1];
+            user.RoleId = user.Role.Id;
+    }
+
+    async Task HandleSubmit()
+    {
+            await UserService.CreateUser(user);
+    }
+
+    //async Task DeleteUser()
+    //{
+    //    await UserService.DeleteUser(user.Id);
+    //}
+
+}
