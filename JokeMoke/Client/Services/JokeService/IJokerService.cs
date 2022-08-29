@@ -11,6 +11,8 @@
         public int CreatedBy { get; set; }
         public bool IsApproved { get; set; }
 
+        public string Message { get; set; }
+
         Task GetJokes();
 
         Task GetJokeTypes();

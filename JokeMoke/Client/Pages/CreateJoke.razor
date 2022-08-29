@@ -11,8 +11,8 @@
     }
 </style>
 
-<PageTitle>جک جدید بسازید</PageTitle>
-    <h3>جک جدید بسازید</h3>
+<PageTitle>جوک جدید بسازید</PageTitle>
+    <h3>جوک جدید بسازید</h3>
 
 <EditForm Model="joke" OnSubmit="HandleSubmit">
     <div>
@@ -30,8 +30,15 @@
     </div>
     <br />
     <button type="submit" class="btn btn-success">@btnText</button>
+
     @*<button type="button" class="btn btn-danger" @onclick="DeleteUser">Delete User</button>*@
+
+    <br />
+
+    <span>&nbsp;&nbsp;</span>@JokeService.Message
+
 </EditForm>
+
 
 @code {
     [Parameter]
@@ -55,7 +62,6 @@
 
     async Task HandleSubmit()
     {
-            User currentUser = await _httpClient.GetFromJsonAsync<User>("user/getcurrentuser");
             await JokeService.CreateJoke(joke);
     }
 

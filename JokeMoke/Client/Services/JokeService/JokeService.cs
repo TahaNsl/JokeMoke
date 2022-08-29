@@ -14,6 +14,9 @@ namespace JokeMoke.Client.Services.JokeService
         public int CreatedBy { get; set; }
         public bool IsApproved { get; set; }
 
+        public string Message { get; set; }
+
+
         private HttpClient _http;
         private readonly NavigationManager _navigationManager;
 
@@ -48,15 +51,36 @@ namespace JokeMoke.Client.Services.JokeService
 
         public async Task CreateJoke(Joke joke)
         {
-            var result = await _http.PostAsJsonAsync("joke", joke);
-            await SetJokes(result);
+            User currentUser = await _http.GetFromJsonAsync<User>("user/getcurrentuser");
+
+            if(currentUser.Id == 0)
+            {
+                currentUser = null;
+            }
+
+            if(currentUser == null)
+            {
+                this.Message = "اول وارد شوید";
+                _navigationManager.NavigateTo("/login", true);
+            }
+            else
+            {
+                joke.CreatedAt = DateTime.UtcNow;
+                joke.CreatedBy = currentUser.Id;
+                joke.IsApproved = IsApproved;
+                this.Message = "جوک ساخته شد";
+
+                var result = await _http.PostAsJsonAsync("joke", joke);
+                await SetJokes(result);
+            }
+            
         }
 
         private async Task SetJokes(HttpResponseMessage result)
         {
             var response = await result.Content.ReadFromJsonAsync<List<Joke>>();
             Jokes = response;
-            _navigationManager.NavigateTo("/index", true);
+            _navigationManager.NavigateTo("/", true);
         }
 
         public async Task DeleteJoke(int id)
