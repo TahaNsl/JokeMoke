@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @inject IProfileService ProfileService
 @inject IEmailService EmailService
+@inject IUserService UserService
 @inject NavigationManager NavigationManager
 
 <style>
@@ -73,7 +74,8 @@
 
 <br />
 
-    <button class="btn btn-success" @onclick="SendMail">Email Verification</button>
+    <button class="btn btn-success" @onclick="SendMail">ارسال ایمیل</button>
+    <button class="btn btn-danger" @onclick="LogOut">خروج</button>
 
 
 @code {
@@ -87,10 +89,15 @@
         await EmailService.Sendmail(email);
     }
 
+    public async Task LogOut()
+    {
+        await UserService.LogOutUser();
+        NavigationManager.NavigateTo("/");
+    }
+
     private async Task OnInputFileChanged(InputFileChangeEventArgs inputFileChangeEvent)
     {
-        if(ProfileService.ProfilePicUrl != null)
-        {
+        
         // Get the file
         var file = inputFileChangeEvent.File;
 
@@ -100,7 +107,7 @@
 
         // Convert byte array to base 64 string
         ProfileService.ProfilePicUrl = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
-        }
+        
         
     }
 

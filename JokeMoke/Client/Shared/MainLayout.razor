@@ -6,9 +6,20 @@
 <div class="page">
 
     <main>
+        
+
+        <AuthorizeView>
+            <Authorized>
         <div class="top-row px-4">
-            <RadzenButton Click=@(args => LoginUser()) Text="وارد شوید" ButtonStyle="ButtonStyle.Primary" />
+            <RadzenButton Click=@(args => BackToHome()) Text="صفحه اصلی" ButtonStyle="ButtonStyle.Primary" />
         </div>
+            </Authorized>
+            <NotAuthorized>
+        <div class="top-row px-4">
+            <RadzenButton Click=@(args => LoginUser()) Text="ورود" ButtonStyle="ButtonStyle.Primary" />
+        </div>
+            </NotAuthorized>
+        </AuthorizeView>
 
         <article class="content px-4">
             @Body
@@ -21,6 +32,11 @@
     public async Task LoginUser()
     {
         NavigationManager.NavigateTo("/login");
+    }
+
+    public async Task BackToHome()
+    {
+        NavigationManager.NavigateTo("/");
     }
 
 }

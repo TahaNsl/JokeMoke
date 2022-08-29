@@ -27,7 +27,6 @@ namespace JokeMoke.Client.Services.UserService
         }
 
 
-
         public async Task GetUsers()
         {
             var result = await _http.GetFromJsonAsync<List<User>>("user");
@@ -77,6 +76,11 @@ namespace JokeMoke.Client.Services.UserService
         public async Task LoginUser()
         {
             await _http.PostAsJsonAsync<User>("user/loginuser", this);
+        }
+
+        public async Task LogOutUser()
+        {
+            await _http.PostAsJsonAsync<User>("user/logoutuser", this);
         }
 
         public static implicit operator UserService(User user)

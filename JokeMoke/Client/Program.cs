@@ -1,6 +1,7 @@
 global using JokeMoke.Client.Services.EmailService;
 global using JokeMoke.Client.Services.ProfileService;
 global using JokeMoke.Client.Services.UserService;
+global using JokeMoke.Client.Services.JokeService;
 global using JokeMoke.Shared;
 using JokeMoke.Client;
 using Microsoft.AspNetCore.Components.Web;
@@ -17,6 +18,8 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri($"{build
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IJokerService, JokeService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();

@@ -17,6 +17,8 @@
 
         Task LoginUser();
 
+        Task LogOutUser();
+
         Task CreateUser(User user);
 
         Task DeleteUser(int id);

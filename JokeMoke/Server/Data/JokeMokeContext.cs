@@ -24,8 +24,11 @@ namespace JokeMoke.Server.Data
         public virtual DbSet<JokeType> JokeType { get; set; }
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<User> User { get; set; }
+
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Joke> Jokes { get; set; }
+        public DbSet<JokeType> JokeTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -100,8 +103,6 @@ namespace JokeMoke.Server.Data
             {
                 entity.ToTable("Joke_Type");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -109,8 +110,6 @@ namespace JokeMoke.Server.Data
 
             modelBuilder.Entity<Role>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);

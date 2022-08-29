@@ -1,9 +1,81 @@
 ﻿@page "/"
+@inject IUserService UserService
+@inject IJokerService JokeService
+@inject NavigationManager NavigationManager
 
-<PageTitle>Index</PageTitle>
+<PageTitle>خانه</PageTitle>
 
-<h1>Hello, world!</h1>
+<h3>جوک ها</h3>
+<br />
 
-Welcome to your new app.
+@if (@JokeService.Jokes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <RadzenDataGrid Data="@JokeService.Jokes" TItem="Joke" PageSize="5" AllowPaging="true"
+        AllowFiltering="true" AllowColumnResize="true" AllowSorting="true">
+        <Columns>
+            <RadzenDataGridColumn Width="50px" TItem="Joke" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                <Template Context="Joke">
+                    @(JokeService.Jokes.IndexOf(Joke) + 1)
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Joke" Property="Value" Title="محتوا" />
+            <RadzenDataGridColumn TItem="Joke" Property="JokeType.Name" Title="نوع جوک"/>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+            <RadzenDataGridColumn Width="170px" TItem="User" Property="Id" Title="Delete Button">
+            <Template Context="Joke">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Class="m-1" Click=@(() => DeleteJoke(Joke.Id)) Text="Delete" />
+            </Template>
+            </RadzenDataGridColumn>
+
+        </Columns>
+    </RadzenDataGrid>
+}
+<br />
+
+<button class="btn btn-success" @onclick="CreateJoke">جوک جدید بسازید</button>
+
+@*<table class="table">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Emil</th>
+            <th>Password</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in UserService.Users)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@user.Password</td>
+
+            </tr>
+        }
+    </tbody>
+</table>*@
+
+@code {
+
+    Joke joke = new Joke { JokeType = new JokeType() };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await JokeService.GetJokes();
+    }
+
+    async Task DeleteJoke(int id)
+    {
+        await JokeService.DeleteJoke(id);
+        NavigationManager.NavigateTo("/", true);
+    }
+
+    void CreateJoke()
+    {
+       NavigationManager.NavigateTo("/createjoke");
+    }
+}
