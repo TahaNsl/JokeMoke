@@ -8,7 +8,7 @@
 <h3>جوک ها</h3>
 <br />
 
-@if (@JokeService.Jokes == null)
+@if (@JokeService.Jokes.Count() == 0)
 {
     <p><em>Loading...</em></p>
 }
