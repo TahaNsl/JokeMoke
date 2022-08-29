@@ -8,7 +8,7 @@
    "ModelNamespace": null,
    "OutputContextPath": null,
    "OutputPath": null,
-   "ProjectRootNamespace": "JokeMoke.Server",
+   "ProjectRootNamespace": "JokeMoke.Shared",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
    "SelectedToBeGenerated": 0,

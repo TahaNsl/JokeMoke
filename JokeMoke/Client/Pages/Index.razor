@@ -23,9 +23,9 @@ else
                 </Template>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Joke" Property="Value" Title="محتوا" />
-            <RadzenDataGridColumn TItem="Joke" Property="JokeType.Name" Title="نوع جوک"/>
+            <RadzenDataGridColumn TItem="Joke" Property="JokeTypeId" Title="نوع جوک"/>
 
-            <RadzenDataGridColumn Width="170px" TItem="User" Property="Id" Title="Delete Button">
+            <RadzenDataGridColumn Width="170px" TItem="Joke" Property="Id" Title="Delete Button">
             <Template Context="Joke">
                 <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Class="m-1" Click=@(() => DeleteJoke(Joke.Id)) Text="Delete" />
             </Template>

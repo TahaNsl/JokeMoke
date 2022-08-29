@@ -35,10 +35,30 @@ namespace JokeMoke.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<List<Joke>>> CreateJoke(Joke joke)
         {
+            joke.JokeType = null;
+
             _context.Jokes.Add(joke);
             await _context.SaveChangesAsync();
-
             return Ok(await GetDbJokes());
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<List<Joke>>> DeleteJoke(int id)
+        {
+            var dbJoke = await _context.Jokes
+                .Include(sh => sh.JokeType)
+                .FirstOrDefaultAsync(sh => sh.Id == id);
+
+            if (dbJoke == null)
+            {
+                return NotFound("Sorry, No User For You!");
+            }
+
+            _context.Jokes.Remove(dbJoke);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(await GetJokes());
         }
 
         private async Task<List<Joke>> GetDbJokes()

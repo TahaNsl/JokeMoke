@@ -61,8 +61,6 @@ namespace JokeMoke.Server.Data
 
             modelBuilder.Entity<Joke>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
                     .HasColumnName("Created_at");

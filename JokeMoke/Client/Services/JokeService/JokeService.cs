@@ -67,7 +67,7 @@ namespace JokeMoke.Client.Services.JokeService
             {
                 joke.CreatedAt = DateTime.UtcNow;
                 joke.CreatedBy = currentUser.Id;
-                joke.IsApproved = IsApproved;
+                joke.IsApproved = false;
                 this.Message = "جوک ساخته شد";
 
                 var result = await _http.PostAsJsonAsync("joke", joke);
