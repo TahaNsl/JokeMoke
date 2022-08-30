@@ -7,6 +7,7 @@ namespace JokeMoke.Shared
 {
     public partial class Comment
     {
+        public int Id { get; set; }
         public int JokeId { get; set; }
         public string Value { get; set; }
         public DateTime CreatedAt { get; set; }

@@ -7,6 +7,11 @@ namespace JokeMoke.Shared
 {
     public partial class Joke
     {
+        public Joke()
+        {
+            Comment = new HashSet<Comment>();
+        }
+
         public int Id { get; set; }
         public string Value { get; set; }
         public int JokeTypeId { get; set; }
@@ -16,6 +21,6 @@ namespace JokeMoke.Shared
 
         public virtual User CreatedByNavigation { get; set; }
         public virtual JokeType JokeType { get; set; }
-        public virtual Comment Comment { get; set; }
+        public virtual ICollection<Comment> Comment { get; set; }
     }
 }

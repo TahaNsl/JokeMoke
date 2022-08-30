@@ -35,10 +35,6 @@ namespace JokeMoke.Server.Data
         {
             modelBuilder.Entity<Comment>(entity =>
             {
-                entity.HasKey(e => e.JokeId);
-
-                entity.Property(e => e.JokeId).ValueGeneratedNever();
-
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
                     .HasColumnName("Created_at");
@@ -56,8 +52,8 @@ namespace JokeMoke.Server.Data
                     .HasConstraintName("FK_Comments_User");
 
                 entity.HasOne(d => d.Joke)
-                    .WithOne(p => p.Comment)
-                    .HasForeignKey<Comment>(d => d.JokeId)
+                    .WithMany(p => p.Comment)
+                    .HasForeignKey(d => d.JokeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Comments_Joke");
             });

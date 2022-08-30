@@ -71,7 +71,6 @@ namespace JokeMoke.Client.Services.CommentService
         {
             var response = await result.Content.ReadFromJsonAsync<List<Comment>>();
             Comments = response;
-            _navigationManager.NavigateTo("/", true);
         }
 
         public static implicit operator CommentService(Comment comment)
