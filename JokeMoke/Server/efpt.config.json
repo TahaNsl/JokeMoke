@@ -14,7 +14,7 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
-         "Name": "[dbo].[Comments]",
+         "Name": "[dbo].[Comment]",
          "ObjectType": 0
       },
       {

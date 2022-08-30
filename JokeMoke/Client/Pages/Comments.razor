@@ -1,0 +1,66 @@
+﻿@page "/comments"
+@page "/comments/{id:int}"
+@inject IUserService UserService
+@inject IJokerService JokeService
+@inject ICommentService CommentService
+@inject NavigationManager NavigationManager
+
+<PageTitle>کامنت ها</PageTitle>
+
+<h3>کامنت ها</h3>
+<br />
+
+    <RadzenDataGrid Data="@CommentService.Comments" TItem="Comment" PageSize="5" AllowPaging="true"
+        AllowFiltering="true" AllowColumnResize="true" AllowSorting="true">
+        <Columns>
+            <RadzenDataGridColumn Width="50px" TItem="Comment" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                <Template Context="Joke">
+                    @(CommentService.Comments.IndexOf(Joke) + 1)
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Comment" Property="Value" Title="محتوا" />
+
+        </Columns>
+    </RadzenDataGrid>
+
+<br />
+<br />
+
+<EditForm Model="comment" OnSubmit="CreateComment">
+    <div>
+        <lable for="Value">کامنت جدید بنویس</lable>
+        <InputText id="value" @bind-Value="comment.Value" class="form-control"></InputText>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-success">ثبت کامنت</button>
+</EditForm>
+
+<br />
+
+<span>&nbsp;&nbsp;</span>@JokeService.Message
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    Joke joke = new Joke { JokeType = new JokeType() };
+
+    Comment comment = new Comment { Joke = new Joke() };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CommentService.GetComments((int)Id);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        joke = await JokeService.GetSingleJoke((int)Id);
+    }
+
+    async Task CreateComment()
+    {
+        await CommentService.CreateComment(comment, (int)Id);
+        //NavigationManager.NavigateTo("/comments", true);
+    }
+
+}

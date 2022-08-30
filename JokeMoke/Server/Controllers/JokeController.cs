@@ -32,6 +32,27 @@ namespace JokeMoke.Server.Controllers
             return Ok(JokeTypes);
         }
 
+        [HttpGet("comments/{id}")]
+        public async Task<ActionResult<List<JokeType>>> GetComments(int id)
+        {
+            var Comments = await _context.Comments.Where(sh => sh.JokeId == id).ToListAsync();
+            return Ok(Comments);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Joke>> GetSingleJoke(int id)
+        {
+            var joke = await _context.Jokes
+                .Include(h => h.JokeType)
+                .FirstOrDefaultAsync(h => h.Id == id);
+            joke.JokeType = null;
+            if (joke == null)
+            {
+                return NotFound("Sorry, No Hero here!");
+            }
+            return Ok(joke);
+        }
+
         [HttpPost]
         public async Task<ActionResult<List<Joke>>> CreateJoke(Joke joke)
         {
@@ -40,6 +61,16 @@ namespace JokeMoke.Server.Controllers
             _context.Jokes.Add(joke);
             await _context.SaveChangesAsync();
             return Ok(await GetDbJokes());
+        }
+
+        [HttpPost("comments")]
+        public async Task<ActionResult<List<Comment>>> CreateComment(Comment comment)
+        {
+            comment.Joke = null;
+
+            _context.Comments.Add(comment);
+            await _context.SaveChangesAsync();
+            return Ok(await GetDbComments());
         }
 
         [HttpDelete("{id}")]
@@ -64,6 +95,11 @@ namespace JokeMoke.Server.Controllers
         private async Task<List<Joke>> GetDbJokes()
         {
             return await _context.Jokes.ToListAsync();
+        }
+
+        private async Task<List<Comment>> GetDbComments()
+        {
+            return await _context.Comments.ToListAsync();
         }
     }
 }

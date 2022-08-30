@@ -9,6 +9,7 @@ namespace JokeMoke.Shared
     {
         public User()
         {
+            Comment = new HashSet<Comment>();
             Joke = new HashSet<Joke>();
         }
 
@@ -20,6 +21,7 @@ namespace JokeMoke.Shared
         public string ProfilePicUrl { get; set; }
 
         public virtual Role Role { get; set; }
+        public virtual ICollection<Comment> Comment { get; set; }
         public virtual ICollection<Joke> Joke { get; set; }
     }
 }

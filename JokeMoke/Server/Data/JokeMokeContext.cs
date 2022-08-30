@@ -18,13 +18,14 @@ namespace JokeMoke.Server.Data
         {
         }
 
-        public virtual DbSet<Comments> Comments { get; set; }
+        public virtual DbSet<Comment> Comment { get; set; }
         public virtual DbSet<Joke> Joke { get; set; }
         public virtual DbSet<JokeStatistics> JokeStatistics { get; set; }
         public virtual DbSet<JokeType> JokeType { get; set; }
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<User> User { get; set; }
 
+        public DbSet<Comment> Comments { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Joke> Jokes { get; set; }
@@ -32,9 +33,11 @@ namespace JokeMoke.Server.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Comments>(entity =>
+            modelBuilder.Entity<Comment>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.JokeId);
+
+                entity.Property(e => e.JokeId).ValueGeneratedNever();
 
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
@@ -47,14 +50,14 @@ namespace JokeMoke.Server.Data
                 entity.Property(e => e.Value).IsRequired();
 
                 entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany()
+                    .WithMany(p => p.Comment)
                     .HasForeignKey(d => d.CreatedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Comments_User");
 
                 entity.HasOne(d => d.Joke)
-                    .WithMany()
-                    .HasForeignKey(d => d.JokeId)
+                    .WithOne(p => p.Comment)
+                    .HasForeignKey<Comment>(d => d.JokeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Comments_Joke");
             });

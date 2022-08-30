@@ -25,9 +25,15 @@ else
             <RadzenDataGridColumn TItem="Joke" Property="Value" Title="محتوا" />
             <RadzenDataGridColumn TItem="Joke" Property="JokeTypeId" Title="نوع جوک"/>
 
-            <RadzenDataGridColumn Width="170px" TItem="Joke" Property="Id" Title="Delete Button">
+            <RadzenDataGridColumn Width="170px" TItem="Joke" Property="Id" Title="حذف">
             <Template Context="Joke">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Class="m-1" Click=@(() => DeleteJoke(Joke.Id)) Text="Delete" />
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Class="m-1" Click=@(() => DeleteJoke(Joke.Id)) Text="حذف" />
+            </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn Width="170px" TItem="Joke" Property="Id" Title="کامنت ها">
+            <Template Context="Joke">
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="chrome_reader_mode" Class="m-1" Click=@(() => CommentsPage(Joke.Id)) Text="کامنت ها" />
             </Template>
             </RadzenDataGridColumn>
 
@@ -72,6 +78,12 @@ else
     {
         await JokeService.DeleteJoke(id);
         NavigationManager.NavigateTo("/", true);
+    }
+
+    async Task CommentsPage(int id)
+    {
+        //await JokeService.GetComments(id);
+        NavigationManager.NavigateTo($"/comments/{id}");
     }
 
     void CreateJoke()

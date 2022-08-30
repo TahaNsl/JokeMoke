@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace JokeMoke.Shared
 {
-    public partial class Comments
+    public partial class Comment
     {
         public int JokeId { get; set; }
         public string Value { get; set; }

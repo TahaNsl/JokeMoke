@@ -16,5 +16,6 @@ namespace JokeMoke.Shared
 
         public virtual User CreatedByNavigation { get; set; }
         public virtual JokeType JokeType { get; set; }
+        public virtual Comment Comment { get; set; }
     }
 }
