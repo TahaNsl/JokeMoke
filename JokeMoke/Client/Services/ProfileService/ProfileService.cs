@@ -1,4 +1,4 @@
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 
 namespace JokeMoke.Client.Services.ProfileService
 {
@@ -27,14 +27,13 @@ namespace JokeMoke.Client.Services.ProfileService
         {
             User user = this;
             await _httpClient.PutAsJsonAsync("user/updateprofile/" + user.Id, user);
-            this.Message = "Profile updated successfully";
+            this.Message = "پروفایل آپدیت شد";
         }
 
         public async Task GetProfile()
         {
             User user = await _httpClient.GetFromJsonAsync<User>("user/getprofile/" + this.Id);
             LoadCurrentObject(user);
-            this.Message = "Profile loaded successfully";
         }
         private void LoadCurrentObject(ProfileService profileService)
         {

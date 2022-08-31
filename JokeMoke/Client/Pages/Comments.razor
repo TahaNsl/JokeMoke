@@ -43,7 +43,7 @@
     [Parameter]
     public int? Id { get; set; }
 
-    Joke joke = new Joke { JokeType = new JokeType() };
+    //Joke joke = new Joke { JokeType = new JokeType() };
 
     Comment comment = new Comment { Joke = new Joke() };
 
@@ -52,10 +52,10 @@
         await CommentService.GetComments((int)Id);
     }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        joke = await JokeService.GetSingleJoke((int)Id);
-    }
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    joke = await JokeService.GetSingleJoke((int)Id);
+    //}
 
     async Task CreateComment()
     {

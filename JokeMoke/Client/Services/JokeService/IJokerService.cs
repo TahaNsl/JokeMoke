@@ -6,6 +6,8 @@
         List<JokeType> JokeTypes { get; set; }
         List<Comment> Comments { get; set; }
 
+        List<JokeStatistics> JokeStatisticsList { get; set; }
+
         public string Value { get; set; }
         public int JokeTypeId { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -21,6 +23,10 @@
         Task GetComments(int id);
 
         Task<Joke> GetSingleJoke(int id);
+
+        Task<Joke> GetRandomJoke();
+
+        //Task LikeJoke(int id, int which);
 
         Task CreateJoke(Joke joke);
 

@@ -8,6 +8,7 @@ namespace JokeMoke.Client.Services.JokeService
         public List<Joke> Jokes { get; set; } = new List<Joke>();
         public List<JokeType> JokeTypes { get; set; } = new List<JokeType>();
         public List<Comment> Comments { get; set; } = new List<Comment>();
+        public List<JokeStatistics> JokeStatisticsList { get; set; } = new List<JokeStatistics>();
 
         public string Value { get; set; }
         public int JokeTypeId { get; set; }
@@ -72,6 +73,25 @@ namespace JokeMoke.Client.Services.JokeService
             }
         }
 
+        public async Task<Joke> GetRandomJoke()
+        {
+            var result = await _http.GetFromJsonAsync<Joke>("joke/Random");
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                throw new Exception("هیچ جوکی یافت نشد");
+            }
+        }
+
+        //public async Task LikeJoke(int id, int which)
+        //{
+        //    var result = await _http.PostAsJsonAsync("joke/Like");
+        //    await SetStats(result);
+        //}
+
         public async Task CreateJoke(Joke joke)
         {
             User currentUser = await _http.GetFromJsonAsync<User>("user/getcurrentuser");
@@ -94,7 +114,9 @@ namespace JokeMoke.Client.Services.JokeService
                 this.Message = "جوک ساخته شد";
 
                 var result = await _http.PostAsJsonAsync("joke", joke);
-                await SetJokes(result);
+                _navigationManager.NavigateTo("/", true);
+                //var StatResult = await _http.PostAsJsonAsync("joke/stat", joke.Id);
+                //await SetStats(StatResult);
             }
             
         }

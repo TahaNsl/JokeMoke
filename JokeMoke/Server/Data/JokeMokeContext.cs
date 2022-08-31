@@ -30,6 +30,8 @@ namespace JokeMoke.Server.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<Joke> Jokes { get; set; }
         public DbSet<JokeType> JokeTypes { get; set; }
+        public DbSet<JokeStatistics> JokeStatisticsList { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

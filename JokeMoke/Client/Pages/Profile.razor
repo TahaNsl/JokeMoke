@@ -15,7 +15,7 @@
     }
 </style>
 
-<h2><b>Profile</b></h2> 
+<h2><b>پروفایل</b></h2> 
 <hr />
 
 <EditForm Model="ProfileService">
@@ -40,20 +40,20 @@
 
         <div class="col">
         <div>
-            <lable for="Username">Username</lable>
-            <InputText @bind-Value="ProfileService.UserName" class="form-control" placeholder="first name"></InputText>
+            <lable for="Username">نام کاربری</lable>
+            <InputText @bind-Value="ProfileService.UserName" class="form-control" placeholder="نام کاربری"></InputText>
         </div>
         <br />
 
         <div>
-            <lable for="Email">Email Address</lable>
-            <InputText @bind-Value="ProfileService.Email" class="form-control" placeholder="email address"></InputText>
+            <lable for="Email">ایمیل</lable>
+            <InputText @bind-Value="ProfileService.Email" class="form-control" placeholder="ایمیل"></InputText>
         </div>
         <br />
 
         <div>
-            <lable for="heroname">Password</lable>
-            <InputText @bind-Value="ProfileService.Password" class="form-control" placeholder="Password"></InputText>
+            <lable for="heroname">پسوورد</lable>
+            <InputText @bind-Value="ProfileService.Password" class="form-control" placeholder="پسوورد"></InputText>
         </div>
         <br />
         </div>
@@ -65,7 +65,7 @@
     <br />
     <hr />
 
-    <button class="btn btn-primary" @onclick="ProfileService.UpdateProfile">Update Profile</button>
+    <button class="btn btn-primary" @onclick="ProfileService.UpdateProfile">آپدیت پروفایل</button>
     <span>&nbsp;&nbsp;</span>@ProfileService.Message
 
     <br />

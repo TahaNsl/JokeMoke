@@ -53,13 +53,65 @@ namespace JokeMoke.Server.Controllers
             return Ok(joke);
         }
 
+        [HttpGet("Random")]
+        public async Task<ActionResult<Joke>> GetRandomJoke()
+        {
+            int total = _context.Jokes.Count();
+            Random r = new Random();
+            int offset = r.Next(0, total);
+            var result = _context.Jokes.Skip(offset).FirstOrDefault();
+            return Ok(result);
+        }
+
+        [HttpGet("stat/{id}")]
+        public async Task<ActionResult<JokeStatistics>> GetStat(int id)
+        {
+            var stat = await _context.JokeStatisticsList
+                .Include(h => h.Joke)
+                .FirstOrDefaultAsync(h => h.JokeId == id);
+            stat.Joke = null;
+            return Ok(stat);
+        }
+
+        [HttpPut("like/{id}/{no}")]
+        public async Task<ActionResult<List<JokeStatistics>>> LikeJoke(int id, int no, int what)
+        {
+            var stat = await _context.JokeStatisticsList
+                .Include(h => h.Joke)
+                .FirstOrDefaultAsync(h => h.JokeId == id);
+
+            if(no == 1)
+            {
+                stat.LikeCount += 1;
+                await _context.SaveChangesAsync();
+                return Ok(await GetDbJokes());
+            }
+            else
+            {
+                stat.DislikeCount += 1;
+                await _context.SaveChangesAsync();
+                return Ok(await GetDbJokes());
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<List<Joke>>> CreateJoke(Joke joke)
         {
             joke.JokeType = null;
-
+            joke.JokeStatistics = null;
             _context.Jokes.Add(joke);
             await _context.SaveChangesAsync();
+
+            JokeStatistics jokeStatistics = new JokeStatistics();
+
+            jokeStatistics.JokeId = joke.Id;
+            jokeStatistics.LikeCount = 0;
+            jokeStatistics.DislikeCount = 0;
+            jokeStatistics.Joke = null;
+
+            _context.JokeStatisticsList.Add(jokeStatistics);
+            await _context.SaveChangesAsync();
+
             return Ok(await GetDbJokes());
         }
 
@@ -100,6 +152,11 @@ namespace JokeMoke.Server.Controllers
         private async Task<List<Comment>> GetDbComments()
         {
             return await _context.Comments.ToListAsync();
+        }
+
+        private async Task<List<JokeStatistics>> GetDbStats()
+        {
+            return await _context.JokeStatisticsList.ToListAsync();
         }
     }
 }

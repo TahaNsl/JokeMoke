@@ -1,77 +1,61 @@
 ﻿@page "/"
 @inject IUserService UserService
 @inject IJokerService JokeService
+@inject IStatService StatService
 @inject NavigationManager NavigationManager
 
-<PageTitle>خانه</PageTitle>
+<PageTitle>جوک موک</PageTitle>
 
-<h3>جوک ها</h3>
 <br />
 
-@if (@JokeService.Jokes.Count() == 0)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <RadzenDataGrid Data="@JokeService.Jokes" TItem="Joke" PageSize="5" AllowPaging="true"
-        AllowFiltering="true" AllowColumnResize="true" AllowSorting="true">
-        <Columns>
-            <RadzenDataGridColumn Width="50px" TItem="Joke" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
-                <Template Context="Joke">
-                    @(JokeService.Jokes.IndexOf(Joke) + 1)
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Joke" Property="Value" Title="محتوا" />
-            <RadzenDataGridColumn TItem="Joke" Property="JokeTypeId" Title="نوع جوک"/>
+  <div class="row my-5">
+        <div class="col-lg-6 col-xl-4 offset-lg-3 offset-xl-4">
+            <RadzenCard class="m-3">
+                <h3 class="h5">سازنده</h3>
+                <div class="d-flex flex-row">
+                    <RadzenImage Path="@UserService.ProfilePicUrl" Class="rounded-circle float-left mr-3" Style="width: 100px; height: 100px;" />
+                    <div>
+                        <div>سازنده</div>
+                        <b>@(joke.CreatedBy)</b>
+                        <div class="mt-3">زمان ساخت جوک</div>
+                        <b>@joke.CreatedAt</b>
+                    </div>
+                </div>
+            </RadzenCard>
+            <RadzenCard class="m-3">
+                <h3 class="h5">جوک</h3>
+                <div>
+                    <div class="col-md-12">
+                        <b>@(joke.Value)</b>
+                    </div>
+                </div>
+            </RadzenCard>
+            <button class="btn btn-dark" @onclick="(() => CommentsPage(joke.Id))"><i class="oi oi-pencil"></i>کامنت ها</button>
+            <button class="btn btn-info" @onclick="(() => Like(joke.Id, 1))"><i class="oi oi-thumb-up"></i>@(jokeStatistics.LikeCount)</button>
+            <button class="btn btn-danger" @onclick="(() => Like(joke.Id, 2))"><i class="oi oi-thumb-down"></i>@(jokeStatistics.DislikeCount)</button>
+            <br />
+        </div>
+        <button class="btn btn-primary" @onclick="(() => RandomJoke())"><i class="oi oi-pencil"></i>جوک بعدی</button>
+    </div>
 
-            <RadzenDataGridColumn Width="170px" TItem="Joke" Property="Id" Title="حذف">
-            <Template Context="Joke">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Class="m-1" Click=@(() => DeleteJoke(Joke.Id)) Text="حذف" />
-            </Template>
-            </RadzenDataGridColumn>
-
-            <RadzenDataGridColumn Width="170px" TItem="Joke" Property="Id" Title="کامنت ها">
-            <Template Context="Joke">
-                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="chrome_reader_mode" Class="m-1" Click=@(() => CommentsPage(Joke.Id)) Text="کامنت ها" />
-            </Template>
-            </RadzenDataGridColumn>
-
-        </Columns>
-    </RadzenDataGrid>
-}
-<br />
-
-<button class="btn btn-success" @onclick="CreateJoke">جوک جدید بسازید</button>
-
-@*<table class="table">
-    <thead>
-        <tr>
-            <th>User Name</th>
-            <th>Emil</th>
-            <th>Password</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in UserService.Users)
-        {
-            <tr>
-                <td>@user.UserName</td>
-                <td>@user.Email</td>
-                <td>@user.Password</td>
-
-            </tr>
-        }
-    </tbody>
-</table>*@
+<button class="btn btn-success" @onclick="CreateJokePage">جوک جدید بسازید</button>
 
 @code {
 
     Joke joke = new Joke { JokeType = new JokeType() };
 
+    JokeStatistics jokeStatistics = new JokeStatistics { Joke = new Joke() };
+
     protected override async Task OnInitializedAsync()
     {
         await JokeService.GetJokes();
+        joke = await JokeService.GetRandomJoke();
+        jokeStatistics = await StatService.GetStat(joke.Id);
+    }
+
+    async Task RandomJoke()
+    {
+        joke = await JokeService.GetRandomJoke();
     }
 
     async Task DeleteJoke(int id)
@@ -86,7 +70,12 @@ else
         NavigationManager.NavigateTo($"/comments/{id}");
     }
 
-    void CreateJoke()
+    async Task Like(int id, int no)
+    {
+        await StatService.LikeJoke(id, no); 
+    }
+
+    void CreateJokePage()
     {
        NavigationManager.NavigateTo("/createjoke");
     }
