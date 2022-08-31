@@ -10,6 +10,7 @@ namespace JokeMoke.Shared
         public Joke()
         {
             Comment = new HashSet<Comment>();
+            JokeStatistics = new HashSet<JokeStatistics>();
         }
 
         public int Id { get; set; }
@@ -22,5 +23,6 @@ namespace JokeMoke.Shared
         public virtual User CreatedByNavigation { get; set; }
         public virtual JokeType JokeType { get; set; }
         public virtual ICollection<Comment> Comment { get; set; }
+        public virtual ICollection<JokeStatistics> JokeStatistics { get; set; }
     }
 }

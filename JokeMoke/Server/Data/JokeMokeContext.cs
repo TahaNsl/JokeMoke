@@ -85,12 +85,10 @@ namespace JokeMoke.Server.Data
 
             modelBuilder.Entity<JokeStatistics>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("Joke_Statistics");
 
                 entity.HasOne(d => d.Joke)
-                    .WithMany()
+                    .WithMany(p => p.JokeStatistics)
                     .HasForeignKey(d => d.JokeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Joke_Statistics_Joke");

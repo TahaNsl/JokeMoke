@@ -7,6 +7,7 @@ namespace JokeMoke.Shared
 {
     public partial class JokeStatistics
     {
+        public int Id { get; set; }
         public int JokeId { get; set; }
         public int LikeCount { get; set; }
         public int DislikeCount { get; set; }
