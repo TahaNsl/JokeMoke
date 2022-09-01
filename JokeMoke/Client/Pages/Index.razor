@@ -46,7 +46,7 @@
             <button class="btn btn-info" @onclick="(() => Like(joke.Id, 1))"><i class="oi oi-thumb-up"></i>@(jokeStatistics.LikeCount)</button>
             <button class="btn btn-danger" @onclick="(() => Like(joke.Id, 2))"><i class="oi oi-thumb-down"></i>@(jokeStatistics.DislikeCount)</button>
         </div>
-        <button id="RandomJoke" class="btn btn-primary" @onclick="(() => RandomJoke())"><i class="oi oi-pencil"></i>جوک بعدی</button>
+        <button id="RandomJoke" class="btn btn-primary" @onclick="(() => RandomJoke())">جوک بعدی</button>
     </div>
 
 <button class="btn btn-success" @onclick="CreateJokePage">جوک جدید بسازید</button>

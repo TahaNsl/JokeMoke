@@ -1,17 +1,24 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Authorization
+@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 @inject IUserService userService
+
+<style>
+    #forMargin {
+        margin-left: 7px;
+    }
+</style>
 
 <div class="page">
 
     <main>
         
-
         <AuthorizeView>
             <Authorized>
         <div class="top-row px-4">
-            <RadzenButton Click=@(args => BackToHome()) Text="صفحه اصلی" ButtonStyle="ButtonStyle.Primary" />
+            <RadzenButton Click=@(args => ProfilePage()) Text="پروفایل" ButtonStyle="ButtonStyle.Primary" />
+            <RadzenButton id="forMargin" Click=@(args => BackToHome()) Text="صفحه اصلی" ButtonStyle="ButtonStyle.Primary" />
         </div>
             </Authorized>
             <NotAuthorized>
@@ -19,6 +26,12 @@
             <RadzenButton Click=@(args => LoginUser()) Text="ورود" ButtonStyle="ButtonStyle.Primary" />
         </div>
             </NotAuthorized>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="Admin">
+            <div class="top-row px-4">
+            <RadzenButton Click=@(args => UsersPage()) Text="مدیریت" ButtonStyle="ButtonStyle.Primary" />
+            </div>
         </AuthorizeView>
 
         <article class="content px-4">
@@ -39,8 +52,17 @@
         NavigationManager.NavigateTo("/");
     }
 
-}
+    [Authorize(Roles = "Admin")]
+    public async Task UsersPage()
+    {
+        NavigationManager.NavigateTo("/users");
+    }
 
+    public async Task ProfilePage()
+    {
+        NavigationManager.NavigateTo("/profile");
+    }
+}
 
 <RadzenDialog/>
 <RadzenNotification/>

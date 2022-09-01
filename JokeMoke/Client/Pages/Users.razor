@@ -11,12 +11,12 @@
     }
 </style>
 
-<PageTitle>Users</PageTitle>
+<PageTitle>یوزر ها</PageTitle>
 
-<h3>Users</h3>
+<h3>یوزر ها</h3>
 <br />
 
-@if (@UserService.Users == null)
+@if (@UserService.Users == null || @UserService.Users.Count() == 0)
 {
     <p><em>Loading...</em></p>
 }
@@ -30,7 +30,7 @@ else
                     @(UserService.Users.IndexOf(User) + 1)
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn Width="160px" TItem="User" Property="User.ProfilePicUrl" Title="User Picture">
+            <RadzenDataGridColumn Width="160px" TItem="User" Property="User.ProfilePicUrl" Title="عکس پروفایل">
                 <Template Context="User">
                     @if (@User.ProfilePicUrl == null)
                     {
@@ -43,12 +43,12 @@ else
                     }
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="User" Property="UserName" Title="User Name" />
-            <RadzenDataGridColumn TItem="User" Property="Email" Title="Email"/>
-            <RadzenDataGridColumn TItem="User" Property="Password" Title="Password"/>
-            <RadzenDataGridColumn Width="170px" TItem="User" Property="Id" Title="Delete Button">
+            <RadzenDataGridColumn TItem="User" Property="UserName" Title="نام کاربری" />
+            <RadzenDataGridColumn TItem="User" Property="Email" Title="ایمیل"/>
+            <RadzenDataGridColumn TItem="User" Property="Password" Title="پسوورد"/>
+            <RadzenDataGridColumn Width="170px" TItem="User" Property="Id" Title="مدیریت یوزر">
             <Template Context="User">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Class="m-1" Click=@(() => DeleteUser(User.Id)) Text="Delete" />
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Class="m-1" Click=@(() => DeleteUser(User.Id)) Text="حذف" />
             </Template>
             </RadzenDataGridColumn>
         </Columns>
@@ -56,7 +56,7 @@ else
 }
 <br />
 
-<button class="btn btn-success" @onclick="CreateUser">Create New User</button>
+<button class="btn btn-success" @onclick="CreateUser">ساخت یوزر جدید</button>
 
 @*<table class="table">
     <thead>
