@@ -66,6 +66,7 @@
     <hr />
 
     <button class="btn btn-primary" @onclick="ProfileService.UpdateProfile">آپدیت پروفایل</button>
+    <button class="btn btn-primary" @onclick="MyJokesPage">جوک های من</button>
     <span>&nbsp;&nbsp;</span>@ProfileService.Message
 
     <br />
@@ -96,7 +97,7 @@
 
     private async Task OnInputFileChanged(InputFileChangeEventArgs inputFileChangeEvent)
     {
-        
+
         // Get the file
         var file = inputFileChangeEvent.File;
 
@@ -106,8 +107,8 @@
 
         // Convert byte array to base 64 string
         ProfileService.ProfilePicUrl = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
-        
-        
+
+
     }
 
     protected override async Task OnInitializedAsync()
@@ -125,5 +126,10 @@
         {
             NavigationManager.NavigateTo("/");
         }
+    }
+
+    async Task MyJokesPage()
+    {
+        NavigationManager.NavigateTo($"/myjokes");
     }
 }

@@ -3,9 +3,9 @@
     public interface IJokerService
     {
         List<Joke> Jokes { get; set; }
+        List<Joke> MyJokes { get; set; }
         List<JokeType> JokeTypes { get; set; }
         List<Comment> Comments { get; set; }
-
         List<JokeStatistics> JokeStatisticsList { get; set; }
 
         public string Value { get; set; }
@@ -26,7 +26,7 @@
 
         Task<Joke> GetRandomJoke();
 
-        //Task LikeJoke(int id, int which);
+        Task GetMyJokes();
 
         Task CreateJoke(Joke joke);
 

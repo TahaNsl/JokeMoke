@@ -6,6 +6,7 @@ namespace JokeMoke.Client.Services.JokeService
     public class JokeService : IJokerService
     {
         public List<Joke> Jokes { get; set; } = new List<Joke>();
+        public List<Joke> MyJokes { get; set; } = new List<Joke>();
         public List<JokeType> JokeTypes { get; set; } = new List<JokeType>();
         public List<Comment> Comments { get; set; } = new List<Comment>();
         public List<JokeStatistics> JokeStatisticsList { get; set; } = new List<JokeStatistics>();
@@ -98,11 +99,23 @@ namespace JokeMoke.Client.Services.JokeService
             }
         }
 
-        //public async Task LikeJoke(int id, int which)
-        //{
-        //    var result = await _http.PostAsJsonAsync("joke/Like");
-        //    await SetStats(result);
-        //}
+        public async Task GetMyJokes()
+        {
+            User currentUser = await _http.GetFromJsonAsync<User>("user/getcurrentuser");
+            int id = currentUser.Id;
+            try
+            {
+                var result = await _http.GetFromJsonAsync<List<Joke>>($"joke/MyJokes/{id}");
+                if (result != null)
+                {
+                    MyJokes = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+            }
+        }
 
         public async Task CreateJoke(Joke joke)
         {
@@ -126,7 +139,7 @@ namespace JokeMoke.Client.Services.JokeService
                 this.Message = "جوک ساخته شد";
 
                 var result = await _http.PostAsJsonAsync("joke", joke);
-                _navigationManager.NavigateTo("/", true);
+                _navigationManager.NavigateTo("/myjokes", true);
                 //var StatResult = await _http.PostAsJsonAsync("joke/stat", joke.Id);
                 //await SetStats(StatResult);
             }
@@ -160,6 +173,20 @@ namespace JokeMoke.Client.Services.JokeService
             }
         }
 
+        public async Task DeleteJoke(int id)
+        {
+            try
+            {
+                await _http.DeleteAsync($"joke/{id}");
+            }
+            catch (Exception ex)
+            {
+
+                _ = ex.Message;
+            }
+
+        }
+
         private async Task SetJokes(HttpResponseMessage result)
         {
             var response = await result.Content.ReadFromJsonAsync<List<Joke>>();
@@ -172,21 +199,6 @@ namespace JokeMoke.Client.Services.JokeService
             var response = await result.Content.ReadFromJsonAsync<List<Comment>>();
             Comments = response;
             _navigationManager.NavigateTo("/", true);
-        }
-
-        public async Task DeleteJoke(int id)
-        {
-            try
-            {
-                var result = await _http.DeleteAsync($"joke/{id}");
-                await SetJokes(result);
-            }
-            catch (Exception ex)
-            {
-
-                _ = ex.Message;
-            }
-
         }
 
         public static implicit operator JokeService(Joke joke)

@@ -7,6 +7,8 @@ namespace JokeMoke.Client.Services.UserService
     {
         public List<User> Users { get; set; } = new List<User>();
         public List<Role> Roles { get; set; } = new List<Role>();
+
+        public int Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
@@ -100,6 +102,7 @@ namespace JokeMoke.Client.Services.UserService
         {
             return new UserService
             {
+                Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
                 Password = user.Password,
@@ -111,6 +114,7 @@ namespace JokeMoke.Client.Services.UserService
         {
             return new User
             {
+                Id = userService.Id,
                 UserName = userService.UserName,
                 Email = userService.Email,
                 Password = userService.Password,

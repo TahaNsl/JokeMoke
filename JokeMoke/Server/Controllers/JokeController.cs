@@ -33,10 +33,17 @@ namespace JokeMoke.Server.Controllers
         }
 
         [HttpGet("comments/{id}")]
-        public async Task<ActionResult<List<JokeType>>> GetComments(int id)
+        public async Task<ActionResult<List<Comment>>> GetComments(int id)
         {
             var Comments = await _context.Comments.Where(sh => sh.JokeId == id).ToListAsync();
             return Ok(Comments);
+        }
+
+        [HttpGet("MyJokes/{id}")]
+        public async Task<ActionResult<List<Joke>>> GetMyJokes(int id)
+        {
+            var MyJokes = await _context.Jokes.Where(sh => sh.CreatedBy == id).ToListAsync();
+            return Ok(MyJokes);
         }
 
         [HttpGet("{id}")]
@@ -128,17 +135,42 @@ namespace JokeMoke.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<Joke>>> DeleteJoke(int id)
         {
+            var dbStat = await _context.JokeStatisticsList
+                .Include(sh => sh.Joke)
+                .FirstOrDefaultAsync(sh => sh.JokeId == id);
+
+            dbStat.Joke = null;
+
+            _context.JokeStatisticsList.Remove(dbStat);
+            await _context.SaveChangesAsync();
+
+            var dbComments = await _context.Comments
+                .Include(sh => sh.Joke)
+                .Where(c => c.JokeId == id).ToListAsync();
+
+            if (dbComments.Count() != 0)
+            {
+                foreach (var comment in dbComments)
+                {
+                    comment.Joke = null;
+                    _context.Remove(comment);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
             var dbJoke = await _context.Jokes
                 .Include(sh => sh.JokeType)
                 .FirstOrDefaultAsync(sh => sh.Id == id);
 
+            dbJoke.JokeType = null;
+
             if (dbJoke == null)
             {
-                return NotFound("Sorry, No User For You!");
+                return NotFound("Error, Joke Not Found!");
             }
 
             _context.Jokes.Remove(dbJoke);
-
             await _context.SaveChangesAsync();
 
             return Ok(await GetJokes());
