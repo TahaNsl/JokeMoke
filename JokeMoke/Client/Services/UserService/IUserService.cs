@@ -15,6 +15,8 @@
 
         Task GetRoles();
 
+        Task<User> GetSingleUser(int id);
+
         Task LoginUser();
 
         Task LogOutUser();

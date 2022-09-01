@@ -45,6 +45,19 @@ namespace JokeMoke.Client.Services.UserService
             }
         }
 
+        public async Task<User> GetSingleUser(int id)
+        {
+            var result = await _http.GetFromJsonAsync<User>($"user/{id}");
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                throw new Exception("کاربر یافت نشد");
+            }
+        }
+
         public async Task CreateUser(User user)
         {
             var result = await _http.PostAsJsonAsync("user", user);

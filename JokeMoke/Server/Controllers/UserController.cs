@@ -32,6 +32,20 @@ namespace BlazorFullStackCrud.Server.Controllers
             return Ok(roles);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> GetSingleUser(int id)
+        {
+            var user = await _context.Users
+                .Include(h => h.Role)
+                .FirstOrDefaultAsync(h => h.Id == id);
+            user.Role = null;
+            if (user == null)
+            {
+                return NotFound("Sorry, No User here!");
+            }
+            return Ok(user);
+        }
+
         [HttpPost]
         public async Task<ActionResult<List<User>>> CreateUser(User user)
         {

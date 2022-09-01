@@ -3,7 +3,11 @@
 @inject IJokerService JokeService
 @inject IStatService StatService
 @inject NavigationManager NavigationManager
-
+<style>
+    #RandomJoke {
+        margin-top: 27px;
+    }
+</style>
 <PageTitle>جوک موک</PageTitle>
 
 <br />
@@ -13,10 +17,18 @@
             <RadzenCard class="m-3">
                 <h3 class="h5">سازنده</h3>
                 <div class="d-flex flex-row">
-                    <RadzenImage Path="@UserService.ProfilePicUrl" Class="rounded-circle float-left mr-3" Style="width: 100px; height: 100px;" />
+                    @if (@creator.ProfilePicUrl == null)
+                    {
+                    <img src="/Images/user-profile.png" Class="rounded-circle float-left mr-3" Style="width: 100px; height: 100px;"/>
+                    }
+                    else
+                    {
+                    <img src="@creator.ProfilePicUrl" Class="rounded-circle float-left mr-3" Style="width: 100px; height: 100px;"/>
+                    }
+                    @*<RadzenImage Path="@UserService.ProfilePicUrl" Class="rounded-circle float-left mr-3" Style="width: 100px; height: 100px;" />*@
                     <div>
                         <div>سازنده</div>
-                        <b>@(joke.CreatedBy)</b>
+                        <b>@(creator.UserName)</b>
                         <div class="mt-3">زمان ساخت جوک</div>
                         <b>@joke.CreatedAt</b>
                     </div>
@@ -30,12 +42,11 @@
                     </div>
                 </div>
             </RadzenCard>
-            <button class="btn btn-dark" @onclick="(() => CommentsPage(joke.Id))"><i class="oi oi-pencil"></i>کامنت ها</button>
+            <button class="btn btn-dark" @onclick="(() => CommentsPage(joke.Id))">کامنت ها</button>
             <button class="btn btn-info" @onclick="(() => Like(joke.Id, 1))"><i class="oi oi-thumb-up"></i>@(jokeStatistics.LikeCount)</button>
             <button class="btn btn-danger" @onclick="(() => Like(joke.Id, 2))"><i class="oi oi-thumb-down"></i>@(jokeStatistics.DislikeCount)</button>
-            <br />
         </div>
-        <button class="btn btn-primary" @onclick="(() => RandomJoke())"><i class="oi oi-pencil"></i>جوک بعدی</button>
+        <button id="RandomJoke" class="btn btn-primary" @onclick="(() => RandomJoke())"><i class="oi oi-pencil"></i>جوک بعدی</button>
     </div>
 
 <button class="btn btn-success" @onclick="CreateJokePage">جوک جدید بسازید</button>
@@ -46,11 +57,38 @@
 
     JokeStatistics jokeStatistics = new JokeStatistics { Joke = new Joke() };
 
+    User creator = new User { Role = new Role() };
+
     protected override async Task OnInitializedAsync()
     {
         await JokeService.GetJokes();
-        joke = await JokeService.GetRandomJoke();
-        jokeStatistics = await StatService.GetStat(joke.Id);
+
+        if(JokeService.Jokes != null && JokeService.Jokes.Count() != 0)
+        {
+            joke = await JokeService.GetRandomJoke();   
+            jokeStatistics = await StatService.GetStat(joke.Id);
+            creator = await UserService.GetSingleUser(joke.CreatedBy);
+        }
+        else
+        {
+            Joke joke = new Joke { JokeType = new JokeType() };
+            JokeStatistics jokeStatistics = new JokeStatistics { Joke = new Joke() };
+        }
+    }
+
+    private async Task OnInputFileChanged(InputFileChangeEventArgs inputFileChangeEvent)
+    {
+        
+        // Get the file
+        var file = inputFileChangeEvent.File;
+
+        // Read the file in a byte array
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(1512000).ReadAsync(buffer);
+
+        // Convert byte array to base 64 string
+        creator.ProfilePicUrl = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+        
     }
 
     async Task RandomJoke()
@@ -66,7 +104,6 @@
 
     async Task CommentsPage(int id)
     {
-        //await JokeService.GetComments(id);
         NavigationManager.NavigateTo($"/comments/{id}");
     }
 

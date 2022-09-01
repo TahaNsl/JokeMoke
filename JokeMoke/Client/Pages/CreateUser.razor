@@ -2,6 +2,8 @@
 @page "/createuser/{id:int}"
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles ="Admin")]
 
 <style>
     body {
@@ -10,24 +12,24 @@
     }
 </style>
 
-<PageTitle>Create a new User</PageTitle>
-    <h3>Create a new User</h3>
+<PageTitle>ساخت یوزر</PageTitle>
+    <h3>ساخت یوزر</h3>
 
 <EditForm Model="user" OnSubmit="HandleSubmit">
     <div>
-        <lable for="Username">Username</lable>
+        <lable for="Username">نام کاربری</lable>
         <InputText id="username" @bind-Value="user.UserName" class="form-control"></InputText>
     </div>
     <div>
-        <lable for="Email">Email Address</lable>
+        <lable for="Email">ایمیل</lable>
         <InputText id="email" @bind-Value="user.Email" class="form-control"></InputText>
     </div>
     <div>
-        <lable for="heroname">Password</lable>
+        <lable for="heroname">پسوورد</lable>
         <InputText id="password" @bind-Value="user.Password" class="form-control"></InputText>
     </div>
     <div>
-        <label>Role</label><br />
+        <label>رول</label><br />
         <InputSelect @bind-Value="user.RoleId" class="form-select">
             @foreach (var role in UserService.Roles)
            {

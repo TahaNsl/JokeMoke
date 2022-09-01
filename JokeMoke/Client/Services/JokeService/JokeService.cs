@@ -35,11 +35,23 @@ namespace JokeMoke.Client.Services.JokeService
 
         public async Task GetJokes()
         {
-            var result = await _http.GetFromJsonAsync<List<Joke>>("joke");
-            if (result != null)
+            try
             {
-                Jokes = result;
+                var result = await _http.GetFromJsonAsync<List<Joke>>("joke");
+                if (result != null && result.Count() != 0)
+                {
+                    Jokes = result;
+                }
+                else
+                {
+                    throw new Exception("هیچ جوکی یافت نشد");
+                }
             }
+            catch(Exception ex)
+            {
+                _ = ex.Message;
+            }
+            
         }
 
         public async Task GetJokeTypes()
