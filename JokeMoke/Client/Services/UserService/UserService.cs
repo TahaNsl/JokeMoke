@@ -95,7 +95,8 @@ namespace JokeMoke.Client.Services.UserService
 
         public async Task LogOutUser()
         {
-            await _http.PostAsJsonAsync<User>("user/logoutuser", this);
+            await _http.GetAsync("user/logoutuser");
+            _navigationManager.NavigateTo("/", true);
         }
 
         public static implicit operator UserService(User user)
