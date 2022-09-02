@@ -110,6 +110,7 @@
     async Task Like(int id, int no)
     {
         await StatService.LikeJoke(id, no); 
+        jokeStatistics = await StatService.GetStat(joke.Id);
     }
 
     void CreateJokePage()
