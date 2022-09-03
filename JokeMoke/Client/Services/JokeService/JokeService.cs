@@ -168,8 +168,8 @@ namespace JokeMoke.Client.Services.JokeService
                 comment.IsApproved = false;
                 this.Message = "کامنت ساخته شد";
 
-                var result = await _http.PostAsJsonAsync("joke/comments", comment);
-                await SetComments(result);
+                var Cms = await _http.PostAsJsonAsync("joke/comments", comment);
+                await GetComments(id);
             }
         }
 

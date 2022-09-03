@@ -60,6 +60,7 @@
     async Task CreateComment()
     {
         await CommentService.CreateComment(comment, (int)Id);
+        await CommentService.GetComments((int)Id);
         //NavigationManager.NavigateTo("/comments", true);
     }
 
