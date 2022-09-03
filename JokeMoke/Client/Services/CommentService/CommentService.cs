@@ -8,6 +8,10 @@ namespace JokeMoke.Client.Services.CommentService
         public List<Joke> Jokes { get; set; } = new List<Joke>();
         public List<JokeType> JokeTypes { get; set; } = new List<JokeType>();
         public List<Comment> Comments { get; set; } = new List<Comment>();
+        public List<Comment> AllComments { get; set; } = new List<Comment>();
+
+        public List<Comment> ApprovedComments { get; set; } = new List<Comment>();
+        public List<Comment> NotApprovedComments { get; set; } = new List<Comment>();
 
         public int JokeId { get; set; }
         public string Value { get; set; }
@@ -31,12 +35,73 @@ namespace JokeMoke.Client.Services.CommentService
             _navigationManager = navigationManager;
         }
 
+        public async Task GetAllComments()
+        {
+            try
+            {
+                var result = await _http.GetFromJsonAsync<List<Comment>>("joke/getallcomments");
+                if (result != null && result.Count() != 0)
+                {
+                    AllComments = result;
+                }
+                else
+                {
+                    throw new Exception("هیچ جوکی یافت نشد");
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+            }
+
+        }
+
         public async Task GetComments(int id)
         {
             var result = await _http.GetFromJsonAsync<List<Comment>>($"joke/comments/{id}");
             if (result != null)
             {
                 Comments = result;
+            }
+        }
+
+        public async Task GetApprovedComments()
+        {
+            try
+            {
+                var result = await _http.GetFromJsonAsync<List<Comment>>("joke/getapprovedcomments");
+                if (result != null && result.Count() != 0)
+                {
+                    ApprovedComments = result;
+                }
+                else
+                {
+                    throw new Exception("هیچ نظری یافت نشد");
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+            }
+        }
+
+        public async Task GetNotApprovedComments()
+        {
+            try
+            {
+                var result = await _http.GetFromJsonAsync<List<Comment>>("joke/getnotapprovedcomments");
+                if (result != null && result.Count() != 0)
+                {
+                    NotApprovedComments = result;
+                }
+                else
+                {
+                    throw new Exception("هیچ نظری یافت نشد");
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
             }
         }
 
@@ -64,6 +129,40 @@ namespace JokeMoke.Client.Services.CommentService
 
                 var result = await _http.PostAsJsonAsync("joke/comments", comment);
                 await SetComments(result);
+            }
+        }
+
+        public async Task DeleteComment(int id)
+        {
+            try
+            {
+                await _http.DeleteAsync($"joke/deletecomment/{id}");
+            }
+            catch (Exception ex)
+            {
+
+                _ = ex.Message;
+            }
+
+        }
+
+        public async Task ApproveComment(int id)
+        {
+            Comment comment = new Comment();
+
+            await _http.PutAsJsonAsync($"joke/approvecomment/{id}", comment);
+        }
+
+        public async Task DeleteAllComments()
+        {
+            try
+            {
+                await _http.DeleteAsync("joke/deleteallcomments");
+            }
+            catch (Exception ex)
+            {
+
+                _ = ex.Message;
             }
         }
 

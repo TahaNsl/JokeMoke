@@ -4,6 +4,8 @@
     {
         List<Joke> Jokes { get; set; }
         List<Joke> MyJokes { get; set; }
+        List<Joke> ApprovedJokes { get; set; }
+        List<Joke> NotApprovedJokes { get; set; }
         List<JokeType> JokeTypes { get; set; }
         List<Comment> Comments { get; set; }
         List<JokeStatistics> JokeStatisticsList { get; set; }
@@ -18,9 +20,11 @@
 
         Task GetJokes();
 
-        Task GetJokeTypes();
+        Task GetApprovedJokes();
 
-        Task GetComments(int id);
+        Task GetNotApprovedJokes();
+
+        Task GetJokeTypes();
 
         Task<Joke> GetSingleJoke(int id);
 
@@ -30,8 +34,10 @@
 
         Task CreateJoke(Joke joke);
 
-        Task CreateComment(Comment comment, int id);
-
         Task DeleteJoke(int id);
+
+        Task DeleteAllJokes();
+
+        Task ApproveJoke(int id);
     }
 }

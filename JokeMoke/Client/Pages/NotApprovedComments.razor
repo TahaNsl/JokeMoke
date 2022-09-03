@@ -1,0 +1,68 @@
+﻿@page "/notapprovedcomments"
+@inject IUserService UserService
+@inject IJokerService JokeService
+@inject IStatService StatService
+@inject ICommentService CommentService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles ="Admin")]
+
+<PageTitle>مدیریت</PageTitle>
+
+<h3>کامنت های تایید نشده</h3>
+<br />
+
+    <RadzenDataGrid Data="@CommentService.NotApprovedComments" TItem="Comment" PageSize="5" AllowPaging="true"
+        AllowFiltering="true" AllowColumnResize="true" AllowSorting="true">
+        <Columns>
+            <RadzenDataGridColumn Width="50px" TItem="Comment" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                <Template Context="Joke">
+                    @(CommentService.NotApprovedComments.IndexOf(Joke) + 1)
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Comment" Property="Value" Title="محتوا" />
+            <RadzenDataGridColumn TItem="Comment" Property="CreatedAt" Title="زمان ساخت" />
+            <RadzenDataGridColumn TItem="Comment" Property="CreatedBy" Title="سازنده" />
+            <RadzenDataGridColumn Width="320px" TItem="Comment" Property="Id" Title="مدیریت کامنت">
+            <Template Context="Joke">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Class="m-1" Click=@(() => DeleteComment(Joke.Id)) Text="حذف" />
+                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Icon="chrome_reader_mode" Class="m-1" Click=@(() => ApproveComment(Joke.Id)) Text="تایید کامنت" />
+            </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+    <br />
+
+    @if(CommentService.NotApprovedComments != null && @CommentService.NotApprovedComments.Count() != 0)
+    {
+     <button class="btn btn-danger" @onclick="DeleteAll">حذف تمام کامنت ها</button>
+    }
+    
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+     protected override async Task OnInitializedAsync()
+    {
+        await CommentService.GetNotApprovedComments();
+    }
+
+    async Task DeleteComment(int id)
+    {
+        await CommentService.DeleteComment(id);
+        NavigationManager.NavigateTo("/notapprovedcomments", true);
+    }
+
+    async Task DeleteAll()
+    {
+        await CommentService.DeleteAllComments();
+        NavigationManager.NavigateTo("/notapprovedcomments", true);
+    }
+
+    async Task ApproveComment(int id)
+    {
+        await CommentService.ApproveComment(id);
+        NavigationManager.NavigateTo("/notapprovedcomments", true);
+    }
+}

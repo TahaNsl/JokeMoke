@@ -19,7 +19,11 @@
                 </Template>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Comment" Property="Value" Title="محتوا" />
-
+            <RadzenDataGridColumn Width="200px" TItem="Comment" Property="Id" Title="مدیریت کامنت">
+            <Template Context="Joke">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Class="m-1" Click=@(() => DeleteComment(Joke.Id)) Text="حذف" />
+            </Template>
+            </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
 
@@ -64,4 +68,9 @@
         //NavigationManager.NavigateTo("/comments", true);
     }
 
+    async Task DeleteComment(int id)
+    {
+        await CommentService.DeleteComment(id);
+        NavigationManager.NavigateTo("/notapprovedcomments", true);
+    }
 }

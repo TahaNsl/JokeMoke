@@ -26,9 +26,15 @@ namespace JokeMoke.Server.Data
         public virtual DbSet<User> User { get; set; }
 
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Comment> AllComments { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Joke> Jokes { get; set; }
+        public DbSet<Joke> ApprovedJokes { get; set; }
+        public DbSet<Joke> NotApprovedJokes { get; set; }
+        public DbSet<Comment> ApprovedComments { get; set; }
+        public DbSet<Comment> NotApprovedComments { get; set; }
+
         public DbSet<JokeType> JokeTypes { get; set; }
         public DbSet<JokeStatistics> JokeStatisticsList { get; set; }
 

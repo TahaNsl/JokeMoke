@@ -63,7 +63,7 @@
     {
         await JokeService.GetJokes();
 
-        if(JokeService.Jokes != null && JokeService.Jokes.Count() != 0)
+        if(JokeService.ApprovedJokes != null && JokeService.ApprovedJokes.Count() != 0)
         {
             joke = await JokeService.GetRandomJoke();   
             jokeStatistics = await StatService.GetStat(joke.Id);

@@ -1,0 +1,48 @@
+﻿@page "/allcomments"
+@inject IUserService UserService
+@inject IJokerService JokeService
+@inject IStatService StatService
+@inject ICommentService CommentService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles ="Admin")]
+
+<PageTitle>مدیریت</PageTitle>
+
+<h3>تمام کامنت ها</h3>
+<br />
+
+<RadzenDataGrid Data="@CommentService.AllComments" TItem="Comment" PageSize="5" AllowPaging="true"
+        AllowFiltering="true" AllowColumnResize="true" AllowSorting="true">
+        <Columns>
+            <RadzenDataGridColumn Width="50px" TItem="Comment" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                <Template Context="Joke">
+                    @(CommentService.AllComments.IndexOf(Joke) + 1)
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Comment" Property="Value" Title="محتوا" />
+            <RadzenDataGridColumn Width="180px" TItem="Comment" Property="Id" Title="مدیریت کامنت">
+            <Template Context="Joke">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Class="m-1" Click=@(() => DeleteComment(Joke.Id)) Text="حذف" />
+            </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    Comment comment = new Comment { Joke = new Joke() };
+
+     protected override async Task OnInitializedAsync()
+    {
+        await CommentService.GetAllComments();
+    }
+
+    async Task DeleteComment(int id)
+    {
+        await CommentService.DeleteComment(id);
+        NavigationManager.NavigateTo("/notapprovedcomments", true);
+    }
+}

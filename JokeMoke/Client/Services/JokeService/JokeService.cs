@@ -7,8 +7,11 @@ namespace JokeMoke.Client.Services.JokeService
     {
         public List<Joke> Jokes { get; set; } = new List<Joke>();
         public List<Joke> MyJokes { get; set; } = new List<Joke>();
+        public List<Joke> ApprovedJokes { get; set; } = new List<Joke>();
+        public List<Joke> NotApprovedJokes { get; set; } = new List<Joke>();
         public List<JokeType> JokeTypes { get; set; } = new List<JokeType>();
         public List<Comment> Comments { get; set; } = new List<Comment>();
+
         public List<JokeStatistics> JokeStatisticsList { get; set; } = new List<JokeStatistics>();
 
         public string Value { get; set; }
@@ -48,11 +51,51 @@ namespace JokeMoke.Client.Services.JokeService
                     throw new Exception("هیچ جوکی یافت نشد");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _ = ex.Message;
             }
-            
+
+        }
+
+        public async Task GetApprovedJokes()
+        {
+            try
+            {
+                var result = await _http.GetFromJsonAsync<List<Joke>>("joke/getapprovedjokes");
+                if (result != null && result.Count() != 0)
+                {
+                    ApprovedJokes = result;
+                }
+                else
+                {
+                    throw new Exception("هیچ جوکی یافت نشد");
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+            }
+        }
+
+        public async Task GetNotApprovedJokes()
+        {
+            try
+            {
+                var result = await _http.GetFromJsonAsync<List<Joke>>("joke/getnotapprovedjokes");
+                if (result != null && result.Count() != 0)
+                {
+                    NotApprovedJokes = result;
+                }
+                else
+                {
+                    throw new Exception("هیچ جوکی یافت نشد");
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+            }
         }
 
         public async Task GetJokeTypes()
@@ -61,15 +104,6 @@ namespace JokeMoke.Client.Services.JokeService
             if (result != null)
             {
                 JokeTypes = result;
-            }
-        }
-
-        public async Task GetComments(int id)
-        {
-            var result = await _http.GetFromJsonAsync<List<Comment>>($"joke/comments/{id}");
-            if (result != null)
-            {
-                Comments = result;
             }
         }
 
@@ -146,33 +180,6 @@ namespace JokeMoke.Client.Services.JokeService
             
         }
 
-        public async Task CreateComment(Comment comment, int id)
-        {
-            User currentUser = await _http.GetFromJsonAsync<User>("user/getcurrentuser");
-
-            if (currentUser.Id == 0)
-            {
-                currentUser = null;
-            }
-
-            if (currentUser == null)
-            {
-                this.Message = "اول وارد شوید";
-                _navigationManager.NavigateTo("/login");
-            }
-            else
-            {
-                comment.CreatedAt = DateTime.UtcNow;
-                comment.CreatedBy = currentUser.Id;
-                comment.JokeId = id;
-                comment.IsApproved = false;
-                this.Message = "کامنت ساخته شد";
-
-                var Cms = await _http.PostAsJsonAsync("joke/comments", comment);
-                await GetComments(id);
-            }
-        }
-
         public async Task DeleteJoke(int id)
         {
             try
@@ -184,20 +191,32 @@ namespace JokeMoke.Client.Services.JokeService
 
                 _ = ex.Message;
             }
+        }
 
+        public async Task DeleteAllJokes()
+        {
+            try
+            {
+                await _http.DeleteAsync("joke/deletealljokes");
+            }
+            catch (Exception ex)
+            {
+
+                _ = ex.Message;
+            }
+        }
+
+        public async Task ApproveJoke(int id)
+        {
+            Joke joke = new Joke();
+
+            await _http.PutAsJsonAsync($"joke/approvejoke/{id}", joke);
         }
 
         private async Task SetJokes(HttpResponseMessage result)
         {
             var response = await result.Content.ReadFromJsonAsync<List<Joke>>();
             Jokes = response;
-            _navigationManager.NavigateTo("/", true);
-        }
-
-        private async Task SetComments(HttpResponseMessage result)
-        {
-            var response = await result.Content.ReadFromJsonAsync<List<Comment>>();
-            Comments = response;
             _navigationManager.NavigateTo("/", true);
         }
 

@@ -19,10 +19,24 @@ namespace JokeMoke.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<User>>> GetJokes()
+        public async Task<ActionResult<List<Joke>>> GetJokes()
         {
             var jokes = await _context.Jokes.ToListAsync();
             return Ok(jokes);
+        }
+
+        [HttpGet("getapprovedjokes")]
+        public async Task<ActionResult<List<Joke>>> GetApprovedJokes()
+        {
+            var approvedjokes = await _context.Jokes.Where(sh => sh.IsApproved == true).ToListAsync();
+            return Ok(approvedjokes);
+        }
+
+        [HttpGet("getnotapprovedjokes")]
+        public async Task<ActionResult<List<Joke>>> GetNotApprovedJokes()
+        {
+            var notApprovedJokes = await _context.Jokes.Where(sh => sh.IsApproved == false).ToListAsync();
+            return Ok(notApprovedJokes);
         }
 
         [HttpGet("joketypes")]
@@ -35,8 +49,29 @@ namespace JokeMoke.Server.Controllers
         [HttpGet("comments/{id}")]
         public async Task<ActionResult<List<Comment>>> GetComments(int id)
         {
-            var Comments = await _context.Comments.Where(sh => sh.JokeId == id).ToListAsync();
+            var Comments = await _context.Comments.Where(sh => sh.JokeId == id && sh.IsApproved == true).ToListAsync();
             return Ok(Comments);
+        }
+
+        [HttpGet("getallcomments")]
+        public async Task<ActionResult<List<Comment>>> GetAllComments()
+        {
+            var allComments = await _context.Comments.ToListAsync();
+            return Ok(allComments);
+        }
+
+        [HttpGet("getapprovedcomments")]
+        public async Task<ActionResult<List<Comment>>> GetApprovedComments()
+        {
+            var approvedComments = await _context.Comments.Where(sh => sh.IsApproved == true).ToListAsync();
+            return Ok(approvedComments);
+        }
+
+        [HttpGet("getnotapprovedcomments")]
+        public async Task<ActionResult<List<Comment>>> GetNotApprovedComments()
+        {
+            var notApprovedComments = await _context.Comments.Where(sh => sh.IsApproved == false).ToListAsync();
+            return Ok(notApprovedComments);
         }
 
         [HttpGet("MyJokes/{id}")]
@@ -66,7 +101,7 @@ namespace JokeMoke.Server.Controllers
             int total = _context.Jokes.Count();
             Random r = new Random();
             int offset = r.Next(0, total);
-            var result = _context.Jokes.Skip(offset).FirstOrDefault();
+            var result = _context.Jokes.Where(h => h.IsApproved == true).Skip(offset).FirstOrDefault();
             return Ok(result);
         }
 
@@ -107,16 +142,6 @@ namespace JokeMoke.Server.Controllers
             joke.JokeType = null;
             joke.JokeStatistics = null;
             _context.Jokes.Add(joke);
-            await _context.SaveChangesAsync();
-
-            JokeStatistics jokeStatistics = new JokeStatistics();
-
-            jokeStatistics.JokeId = joke.Id;
-            jokeStatistics.LikeCount = 0;
-            jokeStatistics.DislikeCount = 0;
-            jokeStatistics.Joke = null;
-
-            _context.JokeStatisticsList.Add(jokeStatistics);
             await _context.SaveChangesAsync();
 
             return Ok(await GetDbJokes());
@@ -167,13 +192,104 @@ namespace JokeMoke.Server.Controllers
 
             if (dbJoke == null)
             {
-                return NotFound("Error, Joke Not Found!");
+                return NotFound("هیچ جوکی پیدا نشد");
             }
 
             _context.Jokes.Remove(dbJoke);
             await _context.SaveChangesAsync();
 
             return Ok(await GetJokes());
+        }
+
+        [HttpDelete("deletecomment/{id}")]
+        public async Task<ActionResult<List<Comment>>> DeleteComment(int id)
+        {
+            var dbComment = await _context.Comments
+                .Include(sh => sh.Joke)
+                .FirstOrDefaultAsync(sh => sh.Id == id);
+
+            if (dbComment == null)
+            {
+                return NotFound("هیچ کامنتی پیدا نشد");
+            }
+
+            _context.Comments.Remove(dbComment);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(await GetDbComments());
+        }
+
+        [HttpDelete("deletealljokes")]
+        public async Task<ActionResult<List<Joke>>> DeleteAllJokes()
+        {
+            var dbJokes = await _context.NotApprovedJokes
+                .Include(sh => sh.JokeType).ToListAsync();
+
+            if (dbJokes.Count() == 0)
+            {
+                return NotFound("هیچ جوکی پیدا نشد");
+            }
+
+            foreach (var joke in dbJokes)
+            {
+                joke.JokeType = null;
+                _context.Remove(joke);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(await GetDbJokes());
+        }
+
+        [HttpDelete("deleteallcomments")]
+        public async Task<ActionResult<List<Comment>>> DeleteAllComments()
+        {
+            var dbComments = await _context.NotApprovedComments
+                .Include(sh => sh.Joke).ToListAsync();
+
+            if (dbComments.Count() == 0)
+            {
+                return NotFound("هیچ کامنتی پیدا نشد");
+            }
+
+            foreach (var comment in dbComments)
+            {
+                comment.Joke = null;
+                _context.Remove(comment);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(await GetDbComments());
+        }
+
+        [HttpPut("approvejoke/{Id}")]
+        public async Task ApproveJoke(int Id, [FromBody] Joke joke)
+        {
+            Joke jokeToApprove = await _context.Jokes.Where(u => u.Id == Id).FirstOrDefaultAsync();
+
+            jokeToApprove.IsApproved = true;
+
+            JokeStatistics jokeStatistics = new JokeStatistics();
+
+            jokeStatistics.JokeId = jokeToApprove.Id;
+            jokeStatistics.LikeCount = 0;
+            jokeStatistics.DislikeCount = 0;
+            jokeStatistics.Joke = null;
+
+            _context.JokeStatisticsList.Add(jokeStatistics);
+            await _context.SaveChangesAsync();
+        }
+
+        [HttpPut("approvecomment/{Id}")]
+        public async Task ApproveComment(int Id, [FromBody] Comment comment)
+        {
+            Comment commentToApprove = await _context.Comment.Where(u => u.Id == Id).FirstOrDefaultAsync();
+
+            commentToApprove.IsApproved = true;
+
+            await _context.SaveChangesAsync();
         }
 
         private async Task<List<Joke>> GetDbJokes()

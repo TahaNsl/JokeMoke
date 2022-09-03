@@ -30,7 +30,7 @@
 
         <AuthorizeView Roles="Admin">
             <div class="top-row px-4">
-            <RadzenButton Click=@(args => UsersPage()) Text="مدیریت" ButtonStyle="ButtonStyle.Primary" />
+            <RadzenButton Click=@(args => ManagementPage()) Text="مدیریت" ButtonStyle="ButtonStyle.Primary" />
             </div>
         </AuthorizeView>
 
@@ -53,9 +53,9 @@
     }
 
     [Authorize(Roles = "Admin")]
-    public async Task UsersPage()
+    public async Task ManagementPage()
     {
-        NavigationManager.NavigateTo("/users");
+        NavigationManager.NavigateTo("/management");
     }
 
     public async Task ProfilePage()

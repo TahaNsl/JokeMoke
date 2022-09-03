@@ -1,0 +1,40 @@
+﻿@page "/management"
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles ="Admin")]
+
+<PageTitle>مدیریت</PageTitle>
+
+<h3>مدیریت</h3>
+<br />
+
+<button class="btn btn-success" @onclick="AllJokesPage">تمام جوک ها</button>
+
+<button class="btn btn-success" @onclick="AllCommentsPage">تمام کامنت ها</button>
+
+<button class="btn btn-success" @onclick="NotApprovedJokes">جوک های تایید نشده</button>
+
+<button class="btn btn-success" @onclick="NotApprovedComments">کامنت های تایید نشده</button>
+
+@code {
+    async Task AllJokesPage()
+    {
+        NavigationManager.NavigateTo("/alljokes", true);
+    }
+
+    async Task AllCommentsPage()
+    {
+        NavigationManager.NavigateTo("/allcomments", true);
+    }
+
+    async Task NotApprovedJokes()
+    {
+        NavigationManager.NavigateTo("/notapprovedjokes", true);
+    }
+
+    async Task NotApprovedComments()
+    {
+        NavigationManager.NavigateTo("/notapprovedcomments", true);
+    }
+}
