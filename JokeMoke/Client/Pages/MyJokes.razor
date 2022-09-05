@@ -1,5 +1,5 @@
 ﻿@page "/myjokes"
-@page "/myjokes/{id:int}"
+@page "/myjokes/{id:guid}"
 @inject IUserService UserService
 @inject IJokerService JokeService
 @inject IStatService StatService
@@ -38,7 +38,7 @@
 
 @code {
     [Parameter]
-    public int? Id { get; set; }
+    public Guid? Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,13 +50,13 @@
         NavigationManager.NavigateTo("/createjoke");
     }
 
-    async Task DeleteJoke(int id)
+    async Task DeleteJoke(Guid id)
     {
         await JokeService.DeleteJoke(id);
         NavigationManager.NavigateTo("/myjokes", true);
     }
 
-    async Task CommentsPage(int id)
+    async Task CommentsPage(Guid id)
     {
        NavigationManager.NavigateTo($"/comments/{id}");
     }

@@ -5,16 +5,15 @@ using System.Collections.Generic;
 
 namespace JokeMoke.Shared
 {
-    public partial class Comment
+    public partial class JokeStatisticsLogs
     {
         public Guid Id { get; set; }
-        public Guid JokeId { get; set; }
-        public string Value { get; set; }
+        public byte? LogType { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid CreatedBy { get; set; }
-        public bool IsApproved { get; set; }
+        public Guid JokeStatisticsId { get; set; }
 
         public virtual User CreatedByNavigation { get; set; }
-        public virtual Joke Joke { get; set; }
+        public virtual JokeStatistics JokeStatistics { get; set; }
     }
 }

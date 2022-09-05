@@ -13,11 +13,11 @@ namespace JokeMoke.Shared
             JokeStatistics = new HashSet<JokeStatistics>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+        public Guid JokeTypeId { get; set; }
         public string Value { get; set; }
-        public int JokeTypeId { get; set; }
         public DateTime CreatedAt { get; set; }
-        public int CreatedBy { get; set; }
+        public Guid CreatedBy { get; set; }
         public bool IsApproved { get; set; }
 
         public virtual User CreatedByNavigation { get; set; }

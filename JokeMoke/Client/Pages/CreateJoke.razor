@@ -1,5 +1,5 @@
 ﻿@page "/createjoke"
-@page "/createjoke/{id:int}"
+@page "/createjoke/{id:guid}"
 @inject IJokerService JokeService
 @inject IUserService userService
 @inject NavigationManager NavigationManager
@@ -42,7 +42,7 @@
 
 @code {
     [Parameter]
-    public int? Id { get; set; }
+    public Guid? Id { get; set; }
 
     string btnText = string.Empty;
 

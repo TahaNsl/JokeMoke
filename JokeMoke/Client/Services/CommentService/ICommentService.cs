@@ -9,27 +9,27 @@
         List<Comment> ApprovedComments { get; set; }
         List<Comment> NotApprovedComments { get; set; }
 
-        public int JokeId { get; set; }
+        public Guid JokeId { get; set; }
         public string Value { get; set; }
         public DateTime CreatedAt { get; set; }
-        public int CreatedBy { get; set; }
+        public Guid CreatedBy { get; set; }
         public bool IsApproved { get; set; }
 
         public string Message { get; set; }
 
         Task GetAllComments();
 
-        Task GetComments(int id);
+        Task GetComments(Guid id);
 
         Task GetApprovedComments();
 
         Task GetNotApprovedComments();
 
-        Task CreateComment(Comment comment, int id);
+        Task CreateComment(Comment comment, Guid id);
 
-        Task DeleteComment(int id);
+        Task DeleteComment(Guid id);
 
-        Task ApproveComment(int id);
+        Task ApproveComment(Guid id);
 
         Task DeleteAllComments();
     }

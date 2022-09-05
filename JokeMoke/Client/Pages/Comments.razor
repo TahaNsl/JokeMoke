@@ -1,5 +1,5 @@
 ﻿@page "/comments"
-@page "/comments/{id:int}"
+@page "/comments/{id:guid}"
 @inject IUserService UserService
 @inject IJokerService JokeService
 @inject ICommentService CommentService
@@ -45,7 +45,7 @@
 
 @code {
     [Parameter]
-    public int? Id { get; set; }
+    public Guid? Id { get; set; }
 
     //Joke joke = new Joke { JokeType = new JokeType() };
 
@@ -53,22 +53,22 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await CommentService.GetComments((int)Id);
+        await CommentService.GetComments((Guid)Id);
     }
 
     //protected override async Task OnParametersSetAsync()
     //{
-    //    joke = await JokeService.GetSingleJoke((int)Id);
+    //    joke = await JokeService.GetSingleJoke((Guid)Id);
     //}
 
     async Task CreateComment()
     {
-        await CommentService.CreateComment(comment, (int)Id);
-        await CommentService.GetComments((int)Id);
+        await CommentService.CreateComment(comment, (Guid)Id);
+        await CommentService.GetComments((Guid)Id);
         //NavigationManager.NavigateTo("/comments", true);
     }
 
-    async Task DeleteComment(int id)
+    async Task DeleteComment(Guid id)
     {
         await CommentService.DeleteComment(id);
         NavigationManager.NavigateTo("/notapprovedcomments", true);

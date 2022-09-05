@@ -26,6 +26,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Joke_Statistics_Logs]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Joke_Type]",
          "ObjectType": 0
       },

@@ -47,7 +47,7 @@ namespace JokeMoke.Server.Controllers
         }
 
         [HttpGet("comments/{id}")]
-        public async Task<ActionResult<List<Comment>>> GetComments(int id)
+        public async Task<ActionResult<List<Comment>>> GetComments(Guid id)
         {
             var Comments = await _context.Comments.Where(sh => sh.JokeId == id && sh.IsApproved == true).ToListAsync();
             return Ok(Comments);
@@ -75,14 +75,14 @@ namespace JokeMoke.Server.Controllers
         }
 
         [HttpGet("MyJokes/{id}")]
-        public async Task<ActionResult<List<Joke>>> GetMyJokes(int id)
+        public async Task<ActionResult<List<Joke>>> GetMyJokes(Guid id)
         {
             var MyJokes = await _context.Jokes.Where(sh => sh.CreatedBy == id).ToListAsync();
             return Ok(MyJokes);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Joke>> GetSingleJoke(int id)
+        public async Task<ActionResult<Joke>> GetSingleJoke(Guid id)
         {
             var joke = await _context.Jokes
                 .Include(h => h.JokeType)
@@ -102,11 +102,19 @@ namespace JokeMoke.Server.Controllers
             Random r = new Random();
             int offset = r.Next(0, total);
             var result = _context.Jokes.Where(h => h.IsApproved == true).Skip(offset).FirstOrDefault();
-            return Ok(result);
+            if(result == null)
+            {
+                Joke nullJoke = new Joke();
+                return Ok(nullJoke);
+            }
+            else
+            {
+                return Ok(result);
+            }
         }
 
         [HttpGet("stat/{id}")]
-        public async Task<ActionResult<JokeStatistics>> GetStat(int id)
+        public async Task<ActionResult<JokeStatistics>> GetStat(Guid id)
         {
             var stat = await _context.JokeStatisticsList
                 .Include(h => h.Joke)
@@ -116,7 +124,7 @@ namespace JokeMoke.Server.Controllers
         }
 
         [HttpPut("like/{id}/{no}")]
-        public async Task<ActionResult<List<JokeStatistics>>> LikeJoke(int id, int no, int what)
+        public async Task<ActionResult<List<JokeStatistics>>> LikeJoke(Guid id, int no, int what)
         {
             var stat = await _context.JokeStatisticsList
                 .Include(h => h.Joke)
@@ -158,7 +166,7 @@ namespace JokeMoke.Server.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<List<Joke>>> DeleteJoke(int id)
+        public async Task<ActionResult<List<Joke>>> DeleteJoke(Guid id)
         {
             var dbStat = await _context.JokeStatisticsList
                 .Include(sh => sh.Joke)
@@ -202,7 +210,7 @@ namespace JokeMoke.Server.Controllers
         }
 
         [HttpDelete("deletecomment/{id}")]
-        public async Task<ActionResult<List<Comment>>> DeleteComment(int id)
+        public async Task<ActionResult<List<Comment>>> DeleteComment(Guid id)
         {
             var dbComment = await _context.Comments
                 .Include(sh => sh.Joke)
@@ -265,7 +273,7 @@ namespace JokeMoke.Server.Controllers
         }
 
         [HttpPut("approvejoke/{Id}")]
-        public async Task ApproveJoke(int Id, [FromBody] Joke joke)
+        public async Task ApproveJoke(Guid Id, [FromBody] Joke joke)
         {
             Joke jokeToApprove = await _context.Jokes.Where(u => u.Id == Id).FirstOrDefaultAsync();
 
@@ -283,7 +291,7 @@ namespace JokeMoke.Server.Controllers
         }
 
         [HttpPut("approvecomment/{Id}")]
-        public async Task ApproveComment(int Id, [FromBody] Comment comment)
+        public async Task ApproveComment(Guid Id, [FromBody] Comment comment)
         {
             Comment commentToApprove = await _context.Comment.Where(u => u.Id == Id).FirstOrDefaultAsync();
 

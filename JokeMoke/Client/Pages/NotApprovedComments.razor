@@ -41,14 +41,14 @@
     
 @code {
     [Parameter]
-    public int? Id { get; set; }
+    public Guid? Id { get; set; }
 
      protected override async Task OnInitializedAsync()
     {
         await CommentService.GetNotApprovedComments();
     }
 
-    async Task DeleteComment(int id)
+    async Task DeleteComment(Guid id)
     {
         await CommentService.DeleteComment(id);
         NavigationManager.NavigateTo("/notapprovedcomments", true);
@@ -60,7 +60,7 @@
         NavigationManager.NavigateTo("/notapprovedcomments", true);
     }
 
-    async Task ApproveComment(int id)
+    async Task ApproveComment(Guid id)
     {
         await CommentService.ApproveComment(id);
         NavigationManager.NavigateTo("/notapprovedcomments", true);

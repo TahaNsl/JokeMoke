@@ -62,6 +62,7 @@
     protected override async Task OnInitializedAsync()
     {
         await JokeService.GetJokes();
+        await JokeService.GetApprovedJokes();
 
         if(JokeService.ApprovedJokes != null && JokeService.ApprovedJokes.Count() != 0)
         {
@@ -96,18 +97,18 @@
         joke = await JokeService.GetRandomJoke();
     }
 
-    async Task DeleteJoke(int id)
+    async Task DeleteJoke(Guid id)
     {
         await JokeService.DeleteJoke(id);
         NavigationManager.NavigateTo("/", true);
     }
 
-    async Task CommentsPage(int id)
+    async Task CommentsPage(Guid id)
     {
         NavigationManager.NavigateTo($"/comments/{id}");
     }
 
-    async Task Like(int id, int no)
+    async Task Like(Guid id, int no)
     {
         await StatService.LikeJoke(id, no); 
         jokeStatistics = await StatService.GetStat(joke.Id);

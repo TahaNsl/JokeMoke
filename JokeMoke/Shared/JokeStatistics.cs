@@ -7,11 +7,17 @@ namespace JokeMoke.Shared
 {
     public partial class JokeStatistics
     {
-        public int Id { get; set; }
-        public int JokeId { get; set; }
+        public JokeStatistics()
+        {
+            JokeStatisticsLogs = new HashSet<JokeStatisticsLogs>();
+        }
+
+        public Guid Id { get; set; }
+        public Guid JokeId { get; set; }
         public int LikeCount { get; set; }
         public int DislikeCount { get; set; }
 
         public virtual Joke Joke { get; set; }
+        public virtual ICollection<JokeStatisticsLogs> JokeStatisticsLogs { get; set; }
     }
 }

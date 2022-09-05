@@ -88,7 +88,7 @@ else
         await UserService.GetUsers();
     }
 
-    async Task DeleteUser(int id)
+    async Task DeleteUser(Guid id)
     {
         await UserService.DeleteUser(id);
         NavigationManager.NavigateTo("/users", true);

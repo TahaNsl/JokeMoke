@@ -5,7 +5,7 @@ namespace JokeMoke.Client.Services.StatService
 {
     public class StatService : IStatService
     {
-        public int JokeId { get; set; }
+        public Guid JokeId { get; set; }
         public int LikeCount { get; set; }
         public int DislikeCount { get; set; }
 
@@ -25,18 +25,18 @@ namespace JokeMoke.Client.Services.StatService
             _navigationManager = navigationManager;
         }
 
-        public async Task<JokeStatistics> GetStat(int id)
+        public async Task<JokeStatistics> GetStat(Guid id)
         {
             var result = await _http.GetFromJsonAsync<JokeStatistics>($"joke/stat/{id}");
 
             return result;
         }
 
-        public async Task LikeJoke(int id, int no)
+        public async Task LikeJoke(Guid id, int no)
         {
             User currentUser = await _http.GetFromJsonAsync<User>("user/getcurrentuser");
 
-            if (currentUser.Id == 0)
+            if (currentUser.Id == Guid.Empty)
             {
                 currentUser = null;
             }

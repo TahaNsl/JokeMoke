@@ -9,6 +9,10 @@
 <h3>مدیریت</h3>
 <br />
 
+<button class="btn btn-success" @onclick="CreateUserPage">ساخت یوزر</button>
+
+<button class="btn btn-success" @onclick="UsersPage">یوزر ها</button>
+
 <button class="btn btn-success" @onclick="AllJokesPage">تمام جوک ها</button>
 
 <button class="btn btn-success" @onclick="AllCommentsPage">تمام کامنت ها</button>
@@ -36,5 +40,15 @@
     async Task NotApprovedComments()
     {
         NavigationManager.NavigateTo("/notapprovedcomments", true);
+    }
+
+    async Task CreateUserPage()
+    {
+        NavigationManager.NavigateTo("/createuser", true);
+    }
+
+    async Task UsersPage()
+    {
+        NavigationManager.NavigateTo("users", true);
     }
 }

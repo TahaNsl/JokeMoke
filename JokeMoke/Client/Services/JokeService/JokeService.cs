@@ -15,9 +15,9 @@ namespace JokeMoke.Client.Services.JokeService
         public List<JokeStatistics> JokeStatisticsList { get; set; } = new List<JokeStatistics>();
 
         public string Value { get; set; }
-        public int JokeTypeId { get; set; }
+        public Guid JokeTypeId { get; set; }
         public DateTime CreatedAt { get; set; }
-        public int CreatedBy { get; set; }
+        public Guid CreatedBy { get; set; }
         public bool IsApproved { get; set; }
 
         public string Message { get; set; }
@@ -107,7 +107,7 @@ namespace JokeMoke.Client.Services.JokeService
             }
         }
 
-        public async Task<Joke> GetSingleJoke(int id)
+        public async Task<Joke> GetSingleJoke(Guid id)
         {
             var result = await _http.GetFromJsonAsync<Joke>($"joke/{id}");
             if (result != null)
@@ -122,7 +122,7 @@ namespace JokeMoke.Client.Services.JokeService
 
         public async Task<Joke> GetRandomJoke()
         {
-            var result = await _http.GetFromJsonAsync<Joke>("joke/Random");
+            var result = await _http.GetFromJsonAsync<Joke>("joke/random");
             if (result != null)
             {
                 return result;
@@ -136,7 +136,7 @@ namespace JokeMoke.Client.Services.JokeService
         public async Task GetMyJokes()
         {
             User currentUser = await _http.GetFromJsonAsync<User>("user/getcurrentuser");
-            int id = currentUser.Id;
+            Guid id = currentUser.Id;
             try
             {
                 var result = await _http.GetFromJsonAsync<List<Joke>>($"joke/MyJokes/{id}");
@@ -155,7 +155,7 @@ namespace JokeMoke.Client.Services.JokeService
         {
             User currentUser = await _http.GetFromJsonAsync<User>("user/getcurrentuser");
 
-            if(currentUser.Id == 0)
+            if(currentUser.Id == Guid.Empty)
             {
                 currentUser = null;
             }
@@ -180,7 +180,7 @@ namespace JokeMoke.Client.Services.JokeService
             
         }
 
-        public async Task DeleteJoke(int id)
+        public async Task DeleteJoke(Guid id)
         {
             try
             {
@@ -206,7 +206,7 @@ namespace JokeMoke.Client.Services.JokeService
             }
         }
 
-        public async Task ApproveJoke(int id)
+        public async Task ApproveJoke(Guid id)
         {
             Joke joke = new Joke();
 

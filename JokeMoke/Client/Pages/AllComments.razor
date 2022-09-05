@@ -31,7 +31,7 @@
 
 @code {
     [Parameter]
-    public int? Id { get; set; }
+    public Guid? Id { get; set; }
 
     Comment comment = new Comment { Joke = new Joke() };
 
@@ -40,7 +40,7 @@
         await CommentService.GetAllComments();
     }
 
-    async Task DeleteComment(int id)
+    async Task DeleteComment(Guid id)
     {
         await CommentService.DeleteComment(id);
         NavigationManager.NavigateTo("/notapprovedcomments", true);

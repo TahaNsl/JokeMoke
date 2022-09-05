@@ -8,7 +8,7 @@ namespace JokeMoke.Client.Services.UserService
         public List<User> Users { get; set; } = new List<User>();
         public List<Role> Roles { get; set; } = new List<Role>();
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
@@ -47,7 +47,7 @@ namespace JokeMoke.Client.Services.UserService
             }
         }
 
-        public async Task<User> GetSingleUser(int id)
+        public async Task<User> GetSingleUser(Guid id)
         {
             var result = await _http.GetFromJsonAsync<User>($"user/{id}");
             if (result != null)
@@ -73,7 +73,7 @@ namespace JokeMoke.Client.Services.UserService
             _navigationManager.NavigateTo("/users", true);
         }
 
-        public async Task DeleteUser(int id)
+        public async Task DeleteUser(Guid id)
         {
             try
             {

@@ -24,6 +24,8 @@ namespace JokeMoke.Server.Data
         public virtual DbSet<JokeType> JokeType { get; set; }
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<JokeStatisticsLogs> JokeStatisticsLogs { get; set; }
+
 
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Comment> AllComments { get; set; }
@@ -37,17 +39,21 @@ namespace JokeMoke.Server.Data
 
         public DbSet<JokeType> JokeTypes { get; set; }
         public DbSet<JokeStatistics> JokeStatisticsList { get; set; }
-
+        public DbSet<JokeStatisticsLogs> JokeStatisticsLogsList { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Comment>(entity =>
             {
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
                     .HasColumnName("Created_at");
 
-                entity.Property(e => e.CreatedBy).HasColumnName("Created_by");
+                entity.Property(e => e.CreatedBy)
+                    .HasColumnName("Created_by")
+                    .HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.IsApproved).HasColumnName("Is_approved");
 
@@ -57,17 +63,19 @@ namespace JokeMoke.Server.Data
                     .WithMany(p => p.Comment)
                     .HasForeignKey(d => d.CreatedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Comments_User");
+                    .HasConstraintName("FK_Comment_User");
 
                 entity.HasOne(d => d.Joke)
                     .WithMany(p => p.Comment)
                     .HasForeignKey(d => d.JokeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Comments_Joke");
+                    .HasConstraintName("FK_Comment_Joke");
             });
 
             modelBuilder.Entity<Joke>(entity =>
             {
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
                     .HasColumnName("Created_at");
@@ -95,6 +103,8 @@ namespace JokeMoke.Server.Data
             {
                 entity.ToTable("Joke_Statistics");
 
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
                 entity.HasOne(d => d.Joke)
                     .WithMany(p => p.JokeStatistics)
                     .HasForeignKey(d => d.JokeId)
@@ -102,9 +112,40 @@ namespace JokeMoke.Server.Data
                     .HasConstraintName("FK_Joke_Statistics_Joke");
             });
 
+            modelBuilder.Entity<JokeStatisticsLogs>(entity =>
+            {
+                entity.ToTable("Joke_Statistics_Logs");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("Created_at");
+
+                entity.Property(e => e.CreatedBy).HasColumnName("Created_by");
+
+                entity.Property(e => e.JokeStatisticsId).HasColumnName("Joke_statistics_id");
+
+                entity.Property(e => e.LogType).HasColumnName("Log_type");
+
+                entity.HasOne(d => d.CreatedByNavigation)
+                    .WithMany(p => p.JokeStatisticsLogs)
+                    .HasForeignKey(d => d.CreatedBy)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Joke_Statistics_Logs_User");
+
+                entity.HasOne(d => d.JokeStatistics)
+                    .WithMany(p => p.JokeStatisticsLogs)
+                    .HasForeignKey(d => d.JokeStatisticsId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Joke_Statistics_Logs_Joke_Statistics");
+            });
+
             modelBuilder.Entity<JokeType>(entity =>
             {
                 entity.ToTable("Joke_Type");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -113,6 +154,8 @@ namespace JokeMoke.Server.Data
 
             modelBuilder.Entity<Role>(entity =>
             {
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -120,6 +163,8 @@ namespace JokeMoke.Server.Data
 
             modelBuilder.Entity<User>(entity =>
             {
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
                 entity.Property(e => e.Email)
                     .IsRequired()
                     .HasMaxLength(320)

@@ -1,5 +1,4 @@
 ﻿@page "/createuser"
-@page "/createuser/{id:int}"
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.Authorization
@@ -44,7 +43,7 @@
 
 @code {
     [Parameter]
-    public int? Id { get; set; }
+    public Guid? Id { get; set; }
 
     string btnText = string.Empty;
 

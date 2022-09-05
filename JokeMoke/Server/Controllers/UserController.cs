@@ -33,7 +33,7 @@ namespace BlazorFullStackCrud.Server.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetSingleUser(int id)
+        public async Task<ActionResult<User>> GetSingleUser(Guid id)
         {
             var user = await _context.Users
                 .Include(h => h.Role)
@@ -58,7 +58,7 @@ namespace BlazorFullStackCrud.Server.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<List<User>>> DeleteUser(int id)
+        public async Task<ActionResult<List<User>>> DeleteUser(Guid id)
         {
             var dbUser = await _context.Users
                 .Include(sh => sh.Role)
@@ -135,7 +135,7 @@ namespace BlazorFullStackCrud.Server.Controllers
         }
 
         [HttpPut("updateprofile/{Id}")]
-        public async Task<User> UpdateProfile(int Id, [FromBody] User user)
+        public async Task<User> UpdateProfile(Guid Id, [FromBody] User user)
         {
             User userToUpdate = await _context.Users.Where(u => u.Id == Id).FirstOrDefaultAsync();
 
@@ -149,7 +149,7 @@ namespace BlazorFullStackCrud.Server.Controllers
         }
 
         [HttpGet("getprofile/{Id}")]
-        public async Task<User> GetProfile(int Id)
+        public async Task<User> GetProfile(Guid Id)
         {
             return await _context.Users.Where(u => u.Id == Id).FirstOrDefaultAsync();
         }

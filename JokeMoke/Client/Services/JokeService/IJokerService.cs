@@ -11,9 +11,9 @@
         List<JokeStatistics> JokeStatisticsList { get; set; }
 
         public string Value { get; set; }
-        public int JokeTypeId { get; set; }
+        public Guid JokeTypeId { get; set; }
         public DateTime CreatedAt { get; set; }
-        public int CreatedBy { get; set; }
+        public Guid CreatedBy { get; set; }
         public bool IsApproved { get; set; }
 
         public string Message { get; set; }
@@ -26,7 +26,7 @@
 
         Task GetJokeTypes();
 
-        Task<Joke> GetSingleJoke(int id);
+        Task<Joke> GetSingleJoke(Guid id);
 
         Task<Joke> GetRandomJoke();
 
@@ -34,10 +34,10 @@
 
         Task CreateJoke(Joke joke);
 
-        Task DeleteJoke(int id);
+        Task DeleteJoke(Guid id);
 
         Task DeleteAllJokes();
 
-        Task ApproveJoke(int id);
+        Task ApproveJoke(Guid id);
     }
 }

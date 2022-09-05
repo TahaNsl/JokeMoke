@@ -6,7 +6,7 @@
 
         List<Role> Roles { get; set; }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
@@ -16,7 +16,7 @@
 
         Task GetRoles();
 
-        Task<User> GetSingleUser(int id);
+        Task<User> GetSingleUser(Guid id);
 
         Task LoginUser();
 
@@ -24,7 +24,7 @@
 
         Task CreateUser(User user);
 
-        Task DeleteUser(int id);
+        Task DeleteUser(Guid id);
 
     }
 }

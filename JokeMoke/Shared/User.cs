@@ -11,17 +11,19 @@ namespace JokeMoke.Shared
         {
             Comment = new HashSet<Comment>();
             Joke = new HashSet<Joke>();
+            JokeStatisticsLogs = new HashSet<JokeStatisticsLogs>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public int RoleId { get; set; }
+        public Guid RoleId { get; set; }
         public string ProfilePicUrl { get; set; }
 
         public virtual Role Role { get; set; }
         public virtual ICollection<Comment> Comment { get; set; }
         public virtual ICollection<Joke> Joke { get; set; }
+        public virtual ICollection<JokeStatisticsLogs> JokeStatisticsLogs { get; set; }
     }
 }

@@ -119,7 +119,7 @@
         if(user.Identity.IsAuthenticated)
         {
             var claim = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
-            ProfileService.Id = Convert.ToInt32(claim?.Value);
+            ProfileService.Id = new Guid(claim?.Value);
             await ProfileService.GetProfile();
         }
         else

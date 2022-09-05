@@ -13,10 +13,10 @@ namespace JokeMoke.Client.Services.CommentService
         public List<Comment> ApprovedComments { get; set; } = new List<Comment>();
         public List<Comment> NotApprovedComments { get; set; } = new List<Comment>();
 
-        public int JokeId { get; set; }
+        public Guid JokeId { get; set; }
         public string Value { get; set; }
         public DateTime CreatedAt { get; set; }
-        public int CreatedBy { get; set; }
+        public Guid CreatedBy { get; set; }
         public bool IsApproved { get; set; }
 
         public string Message { get; set; }
@@ -56,7 +56,7 @@ namespace JokeMoke.Client.Services.CommentService
 
         }
 
-        public async Task GetComments(int id)
+        public async Task GetComments(Guid id)
         {
             var result = await _http.GetFromJsonAsync<List<Comment>>($"joke/comments/{id}");
             if (result != null)
@@ -105,11 +105,11 @@ namespace JokeMoke.Client.Services.CommentService
             }
         }
 
-        public async Task CreateComment(Comment comment, int id)
+        public async Task CreateComment(Comment comment, Guid id)
         {
             User currentUser = await _http.GetFromJsonAsync<User>("user/getcurrentuser");
 
-            if (currentUser.Id == 0)
+            if (currentUser.Id == Guid.Empty)
             {
                 currentUser = null;
             }
@@ -132,7 +132,7 @@ namespace JokeMoke.Client.Services.CommentService
             }
         }
 
-        public async Task DeleteComment(int id)
+        public async Task DeleteComment(Guid id)
         {
             try
             {
@@ -146,7 +146,7 @@ namespace JokeMoke.Client.Services.CommentService
 
         }
 
-        public async Task ApproveComment(int id)
+        public async Task ApproveComment(Guid id)
         {
             Comment comment = new Comment();
 
