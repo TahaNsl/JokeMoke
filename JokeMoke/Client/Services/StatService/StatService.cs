@@ -47,7 +47,7 @@ namespace JokeMoke.Client.Services.StatService
             }
             else
             {
-                await _http.PutAsJsonAsync($"joke/like/{id}/{no}", 1);
+                await _http.PutAsJsonAsync($"joke/like/{id}/{no}", currentUser);
             }
         }
 

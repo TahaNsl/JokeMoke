@@ -139,7 +139,7 @@ namespace JokeMoke.Client.Services.JokeService
             Guid id = currentUser.Id;
             try
             {
-                var result = await _http.GetFromJsonAsync<List<Joke>>($"joke/MyJokes/{id}");
+                var result = await _http.GetFromJsonAsync<List<Joke>>($"joke/myjokes/{id}");
                 if (result != null)
                 {
                     MyJokes = result;

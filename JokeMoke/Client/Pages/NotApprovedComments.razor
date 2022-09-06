@@ -51,18 +51,15 @@
     async Task DeleteComment(Guid id)
     {
         await CommentService.DeleteComment(id);
-        NavigationManager.NavigateTo("/notapprovedcomments", true);
     }
 
     async Task DeleteAll()
     {
         await CommentService.DeleteAllComments();
-        NavigationManager.NavigateTo("/notapprovedcomments", true);
     }
 
     async Task ApproveComment(Guid id)
     {
         await CommentService.ApproveComment(id);
-        NavigationManager.NavigateTo("/notapprovedcomments", true);
     }
 }

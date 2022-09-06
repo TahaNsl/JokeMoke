@@ -74,7 +74,7 @@ namespace JokeMoke.Server.Controllers
             return Ok(notApprovedComments);
         }
 
-        [HttpGet("MyJokes/{id}")]
+        [HttpGet("myjokes/{id}")]
         public async Task<ActionResult<List<Joke>>> GetMyJokes(Guid id)
         {
             var MyJokes = await _context.Jokes.Where(sh => sh.CreatedBy == id).ToListAsync();
@@ -124,24 +124,139 @@ namespace JokeMoke.Server.Controllers
         }
 
         [HttpPut("like/{id}/{no}")]
-        public async Task<ActionResult<List<JokeStatistics>>> LikeJoke(Guid id, int no, int what)
-        {
+        public async Task<ActionResult<List<JokeStatistics>>> LikeJoke(Guid id, int no, User currentUser)
+            {
             var stat = await _context.JokeStatisticsList
                 .Include(h => h.Joke)
                 .FirstOrDefaultAsync(h => h.JokeId == id);
 
-            if(no == 1)
+            var statlog = await _context.JokeStatisticsLogsList.Include(h => h.JokeStatistics)
+                .Where(h => h.JokeStatisticsId == stat.Id)
+                .FirstOrDefaultAsync();
+
+            if (statlog == null)
             {
-                stat.LikeCount += 1;
-                await _context.SaveChangesAsync();
-                return Ok(await GetDbJokes());
+                JokeStatisticsLogs jokestatlog = new JokeStatisticsLogs();
+
+                jokestatlog.CreatedAt = DateTime.UtcNow;
+                jokestatlog.CreatedBy = currentUser.Id;
+                jokestatlog.JokeStatisticsId = stat.Id;
+
+                if (no == 1)
+                {
+                    if (jokestatlog.LogType == 1)
+                    {
+                        jokestatlog.LogType = null;
+                        stat.LikeCount -= 1;
+                    }
+                    else
+                    {
+                        if (jokestatlog.LogType != 2 && jokestatlog.LogType == null)
+                        {
+                            jokestatlog.LogType = 1;
+                            stat.LikeCount += 1;
+                        }
+
+                        if (jokestatlog.LogType == 2)
+                        {
+                            jokestatlog.LogType = 1;
+                            stat.DislikeCount -= 1;
+                            stat.LikeCount += 1;
+                        }
+                    }
+
+                    _context.JokeStatisticsLogsList.Add(jokestatlog);
+                    await _context.SaveChangesAsync();
+                    return Ok(await GetDbJokes());
+                }
+
+                if (no == 2)
+                {
+                    if (jokestatlog.LogType == 2)
+                    {
+                        jokestatlog.LogType = null;
+                        stat.DislikeCount -= 1;
+                    }
+                    else
+                    {
+                        if (jokestatlog.LogType != 1 && jokestatlog.LogType == null)
+                        {
+                            jokestatlog.LogType = 2;
+                            stat.DislikeCount += 1;
+                        }
+
+                        if (jokestatlog.LogType == 1)
+                        {
+                            jokestatlog.LogType = 2;
+                            stat.LikeCount -= 1;
+                            stat.DislikeCount += 1;
+                        }
+                    }
+                    
+                    _context.JokeStatisticsLogsList.Add(jokestatlog);
+                    await _context.SaveChangesAsync();
+                    return Ok(await GetDbJokes());
+                }
             }
-            else
+
+            if (statlog != null)
             {
-                stat.DislikeCount += 1;
-                await _context.SaveChangesAsync();
-                return Ok(await GetDbJokes());
+                if (no == 1)
+                {
+                    if (statlog.LogType == 1)
+                    {
+                        statlog.LogType = null;
+                        stat.LikeCount -= 1;
+                    }
+                    else
+                    {
+                        if (statlog.LogType != 2 && statlog.LogType == null)
+                        {
+                            statlog.LogType = 1;
+                            stat.LikeCount += 1;
+                        }
+
+                        if (statlog.LogType == 2)
+                        {
+                            statlog.LogType = 1;
+                            stat.DislikeCount -= 1;
+                            stat.LikeCount += 1;
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+                    return Ok(await GetDbJokes());
+                }
+
+                if (no == 2)
+                {
+                    if (statlog.LogType == 2)
+                    {
+                        statlog.LogType = null;
+                        stat.DislikeCount -= 1;
+                    }
+                    else
+                    {
+                        if (statlog.LogType != 1 && statlog.LogType == null)
+                        {
+                            statlog.LogType = 2;
+                            stat.DislikeCount += 1;
+                        }
+
+                        if (statlog.LogType == 1)
+                        {
+                            statlog.LogType = 2;
+                            stat.DislikeCount += 1;
+                            stat.LikeCount -= 1;
+                        }
+                    }
+                    
+                    await _context.SaveChangesAsync();
+                    return Ok(await GetDbJokes());
+                }
             }
+
+            return Ok(await GetDbJokes());
         }
 
         [HttpPost]
@@ -174,6 +289,13 @@ namespace JokeMoke.Server.Controllers
 
             dbStat.Joke = null;
 
+            var dbStatLog = await _context.JokeStatisticsLogsList
+                .Include(sh => sh.JokeStatistics)
+                .FirstOrDefaultAsync(sh => sh.JokeStatisticsId == dbStat.Id);
+
+            dbStatLog.JokeStatistics = null;
+
+            _context.JokeStatisticsLogsList.Remove(dbStatLog);
             _context.JokeStatisticsList.Remove(dbStat);
             await _context.SaveChangesAsync();
 

@@ -50,18 +50,15 @@
     async Task DeleteJoke(Guid id)
     {
         await JokeService.DeleteJoke(id);
-        NavigationManager.NavigateTo("/notapprovedjokes", true);
     }
 
     async Task DeleteAll()
     {
         await JokeService.DeleteAllJokes();
-        NavigationManager.NavigateTo("/notapprovedjokes", true);
     }
 
     async Task ApproveJoke(Guid id)
     {
         await JokeService.ApproveJoke(id);
-        NavigationManager.NavigateTo("/notapprovedjokes", true);
     }
 }
