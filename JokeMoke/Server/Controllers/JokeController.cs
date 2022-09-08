@@ -131,7 +131,7 @@ namespace JokeMoke.Server.Controllers
                 .FirstOrDefaultAsync(h => h.JokeId == id);
 
             var statlog = await _context.JokeStatisticsLogsList.Include(h => h.JokeStatistics)
-                .Where(h => h.JokeStatisticsId == stat.Id)
+                .Where(h => h.JokeStatisticsId == stat.Id && h.CreatedBy == currentUser.Id)
                 .FirstOrDefaultAsync();
 
             if (statlog == null)

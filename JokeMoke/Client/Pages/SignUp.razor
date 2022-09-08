@@ -1,0 +1,58 @@
+﻿@page "/signup"
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Authorization
+
+<style>
+    body {
+        background-color: #8EC5FC;
+        background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    }
+</style>
+
+<PageTitle>ثبت نام</PageTitle>
+    <h3>ثبت نام</h3>
+
+<EditForm Model="user" OnSubmit="HandleSubmit">
+    <div>
+        <lable for="Username">نام کاربری</lable>
+        <InputText id="username" @bind-Value="user.UserName" class="form-control"></InputText>
+    </div>
+    <div>
+        <lable for="Email">ایمیل</lable>
+        <InputText id="email" @bind-Value="user.Email" class="form-control"></InputText>
+    </div>
+    <div>
+        <lable for="heroname">پسوورد</lable>
+        <InputText id="password" @bind-Value="user.Password" class="form-control"></InputText>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-success">@btnText</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    string btnText = string.Empty;
+
+    User user = new User { Role = new Role() };
+
+    protected override async  Task OnInitializedAsync()
+    {
+        btnText = "Create User";
+        await UserService.GetRoles();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+            user.Role = UserService.Roles[1];
+            user.RoleId = user.Role.Id;
+    }
+
+    async Task HandleSubmit()
+    {
+            await UserService.CreateUser(user);
+    }
+
+}

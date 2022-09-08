@@ -115,7 +115,7 @@ button{
 }
 .social div{
   background: red;
-  width: 150px;
+  width: auto;
   border-radius: 3px;
   padding: 5px 10px 10px 5px;
   background-color: rgba(255,255,255,0.27);
@@ -141,22 +141,21 @@ button{
 
     <EditForm Model="userService" OnSubmit="LoginUser">
 
-        <h3>Login Here</h3>
+        <h3>ورود</h3>
 
-        <lable for="Username">Username</lable>
-        <InputText placeholder="Enter your username..." id="username" @bind-Value="userService.UserName" class="form-control"></InputText>
+        <lable for="Username">نام کاربری</lable>
+        <InputText placeholder="نام کاربری خود را وارد کنید" id="username" @bind-Value="userService.UserName" class="form-control"></InputText>
 
-        <lable for="Email">Email Address</lable>
-        <InputText type="email" placeholder="Enter your email..." id="email" @bind-Value="userService.Email" class="form-control"></InputText>
+        <lable for="Email">ایمیل</lable>
+        <InputText type="email" placeholder="ایمیل خود را وارد کنید" id="email" @bind-Value="userService.Email" class="form-control"></InputText>
 
-        <lable for="heroname">Password</lable>
-        <InputText type="password" placeholder="Enter your password..." id="password" @bind-Value="userService.Password" class="form-control"></InputText>
+        <lable for="heroname">پسوورد</lable>
+        <InputText type="password" placeholder="پسوورد خود را وارد کنید" id="password" @bind-Value="userService.Password" class="form-control"></InputText>
 
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" class="btn btn-primary">ورود</button>
 
         <div class="social">
-          <div class="go"><i class="fab fa-google"></i>  Google</div>
-          <div class="fb"><i class="fab fa-facebook"></i>  Facebook</div>
+          <div class="go"><i class="fab fa-google"></i>ورود با گوگل</div>
         </div>
 
     </EditForm>
